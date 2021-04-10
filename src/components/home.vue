@@ -69,7 +69,13 @@
             </el-aside>
             <el-main class="main">
 
-            <router-view></router-view>    
+            <!-- <router-view></router-view>     -->
+             
+                	<keep-alive>
+      <router-view v-if="$route.meta.keepAlive"></router-view>
+    </keep-alive>
+    <router-view v-if="!$route.meta.keepAlive"></router-view>
+               
             </el-main>     
         </el-container>
     </el-container>

@@ -42,14 +42,16 @@ export default new Router({
         {
           path: '/huobi',
           name: 'huobi',
-          component: Huobi
+          component: Huobi,
+          meta: { keepAlive: true}
 
         },
 
         {
           path: '/okex',
           name: 'okex',
-          component: Okex
+          component: Okex,
+          meta: { keepAlive: true}
 
         },
 

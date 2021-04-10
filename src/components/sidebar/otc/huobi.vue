@@ -2,14 +2,15 @@
   <div id="root">
     <div id="head">
       <!-- <div style="font-weight:bolder;">OTC套利工具{{(track.dataSourceIndex== 0 || track.dataSourceIndex == 1)?"--火币":"--OK欧易"}}</div> -->
-      <div style="margin-right:20px">
+      <div style="margin-right:20px;">
         USDT买入 <el-input-number style="margin-right:10px;" v-model="usdtPrice.buy" controls-position="right" :min="5.00" :max="15.00" :precision="2" :step="0.01" size="mini"></el-input-number>
         卖出 <el-input-number v-model="usdtPrice.sell" controls-position="right" :min="5.00" :max="15.00" :precision="2" :step="0.01" size="mini"></el-input-number>
         <el-button style="margin-left:10px;" type="primary" @click="showSettingDialog" icon="el-icon-s-tools" size="mini">设置</el-button>
       </div>
   
-      <div >角色 {{ role }}</div>
-      <div>费率 {{userFee }}</div>
+      <div style="color:darkmagenta"> 模式: {{ settingForm.userType == 1 ? '散户看盘,' : '广告商看盘,' }}  </div>
+      <div style="color:darkmagenta; margin-left:15px"> 你的 otc费率是 {{settingForm.otcfee }}, 币币费率是 {{settingForm.coinfee}}  </div>
+      
       <div class="tradePrice">
           <div>实时价格1</div>
           <div>实时价格2</div>
@@ -30,7 +31,7 @@
               size="mini"
               
               border
-              :data="otcDepth[item] ? otcDepth[item].bids : []"
+              :data="otcDepth[item] ? otcDepth[item].bids.slice(0, settingForm.count) : []"
               :row-class-name="otcRowClassName"
               :cell-style="otcCellStyle"
               :header-cell-style="otcHeaderCellStyleBuy"
@@ -58,7 +59,7 @@
               size="mini"
               :style="maxWidhStyle(item)"
               border
-              :data="otcDepth[item] ? otcDepth[item].asks : []"
+              :data="otcDepth[item] ? otcDepth[item].asks.slice(0, settingForm.count) : []"
               :row-class-name="otcRowClassName"
               :cell-style="otcCellStyle"
               :header-cell-style="otcHeaderCellStyleSell"
@@ -81,26 +82,63 @@
       :visible.sync="settingDialogVisible"
       width="50%">
       <!-- <span>这是一段信息</span> -->
+
       <el-form ref="settingForm" label-width="100px" label-position="left">
-        <el-form-item label="显示OTC前20">
-          <el-checkbox-group v-model="settingForm.otc" v-if="track.dataSourceIndex== 2">
+        
+
+        <el-form-item label="用户看盘模式">
+            <el-radio v-model="settingForm.userType" :label="1">散户看盘</el-radio>
+            <el-radio v-model="settingForm.userType" :label="2">广告商看盘</el-radio>
+        </el-form-item>
+
+        <el-form-item label="表格数据条数" >
+            <el-radio v-model="settingForm.count" :label="10">10</el-radio>
+            <el-radio v-model="settingForm.count" :label="20">20</el-radio>
+
+        </el-form-item>
+
+        <el-form-item label="币名称">
+          <!-- <el-checkbox-group v-model="settingForm.otc" v-if="track.dataSourceIndex== 2">
             <el-checkbox v-for="(item, index) in track.sub_ok.otcRmb" v-bind:key="index" :label="item" name="type">{{item.toUpperCase().slice(0,-3)}}</el-checkbox>
-            <!-- <el-checkbox label="usdtrmb" name="type">USDT</el-checkbox>-->
-          </el-checkbox-group>
+          </el-checkbox-group> -->
           <el-checkbox-group v-model="settingForm.otc" v-if="(track.dataSourceIndex== 0 || track.dataSourceIndex== 1)">
             <el-checkbox v-for="(item, index) in track.sub_huobi.otcRmb" v-bind:key="index" :label="item" name="type">{{item.toUpperCase().slice(0,-3)}}</el-checkbox>
             <!-- <el-checkbox label="usdtrmb" name="type">USDT</el-checkbox>-->
           </el-checkbox-group>
         </el-form-item>
-        <el-form-item label="显示实时价格">
+
+        <!-- <el-form-item label="显示实时价格">
           <el-checkbox-group v-model="settingForm.realtimePrice" v-if="track.dataSourceIndex== 2">
             <el-checkbox v-for="(item, index) in track.sub_ok.depthUsdt" v-bind:key="index" :label="item" name="type">{{item.toUpperCase().slice(0,-4)}}</el-checkbox>
-            <!-- <el-checkbox label="btcusdt" name="type">BTC</el-checkbox> -->
           </el-checkbox-group>
           <el-checkbox-group v-model="settingForm.realtimePrice" v-if="(track.dataSourceIndex== 0 || track.dataSourceIndex== 1)">
             <el-checkbox v-for="(item, index) in track.sub_ok.depthUsdt" v-bind:key="index" :label="item" name="type">{{item.toUpperCase().slice(0,-4)}}</el-checkbox>
           </el-checkbox-group>
-        </el-form-item>
+        </el-form-item> -->
+
+        <el-row>
+            <el-col :span="10" style="margin-right:40px">
+                    <el-form-item label="otc交易费率">
+                         <el-select v-model="settingForm.otcfee"  placeholder="设置otc交易费率, 默认为0"  style="width:100%" >
+                            <el-option v-for=" item in otcFees" :key="item.value" :label="item.label" :value="item.value"></el-option>
+
+                         </el-select>
+                    </el-form-item>
+            </el-col>
+            <el-col :span="10">
+                <el-form-item label="币币交易费率">
+
+                    <el-select v-model="settingForm.coinfee"  placeholder="设置币币交易费率, 默认为0"  style="width:100%" >
+                       <el-option v-for="item in coinFees" :key="item.value" :label="item.label" :value="item.value"></el-option>
+                    </el-select>
+                </el-form-item>
+            </el-col>
+        </el-row>
+      
+
+
+      
+
         <el-form-item label="颜色习惯" :inline-message="true">
           <div style="display: flex;flex-direction: row; justify-content: start; align-items:center; height: 100%; width:100%;">
             <el-switch
@@ -116,9 +154,9 @@
             <el-option label="抵扣" value="2"></el-option>
           </el-select>
         </el-form-item> -->
-        <el-form-item label="费率" v-show="settingForm.feeVisiable == 2" style="width: 30%;" inline="true">
+        <!-- <el-form-item label="费率" v-show="settingForm.feeVisiable == 2" style="width: 30%;" inline="true">
           <el-input v-model="settingForm.fee"></el-input><span>%</span>
-        </el-form-item>
+        </el-form-item> -->
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="settingDialogVisible = false">取 消</el-button>
@@ -176,22 +214,41 @@ export default {
       colorSelect: true,
       settingDialogVisible: false,
       otcSettingVisible: false,
+
       setting:{
         realtimePrice:["btcusdt"],//btcusdt,ltcusdt
         otc:["usdtrmb","btcrmb",],//btcrmb,ltcrmb,usdtrmb
-        fee:0,
+        otcfee:0,
+        coinfee:0,
+        count:20,
       },
       settingForm:{
         realtimePrice:[],
         otc:[],
         feeVisiable:"",
-        fee:0
+        otcfee:0,
+        coinfee:0,
+        count:20,
+        userType:1,
       },
       otcSettingForm:{
         name:"",
         // blueName:"",
         // greenName:"",
-      }
+      },
+      otcFees:[
+          {value: 0, label: 0},
+          {value: 0.002, label: 0.002},
+          {value: 0.0008, label: 0.0008},
+          {value: 0.0002, label: 0.0002},
+          
+      ],
+      coinFees:[
+          {value: 0, label: 0},
+          {value: 0.002, label: 0.002},
+          {value: 0.0008, label: 0.0008},
+          {value: 0.0002, label: 0.0002},
+      ]
     };
   },
   computed: mapState(["track","otcDepth","marketDepth","usdtPrice"]),
@@ -254,6 +311,12 @@ export default {
       this.setting.realtimePrice = this.settingForm.realtimePrice
       this.setting.otc = this.settingForm.otc
       this.setting.fee = this.settingForm.fee
+      this.setting.count = this.settingForm.count
+      this.$message({
+                       showClose: true,
+                       message: '修改成功',
+                       type: 'success'
+                   });
       // let that = this
       // setTimeout(function(){
       //   that.setting.otc.forEach(element => { //延迟刷新是为了让dom刷新完后再设定可拖拽，和dom刷新机制有关系
@@ -414,6 +477,7 @@ body{
   /* font-size: 14px; */
   box-sizing: border-box;
   background-color: white;
+ 
 }
 #head {
   display: flex;
@@ -471,6 +535,8 @@ body{
     justify-content: flex-start;
     flex-wrap: wrap;
     flex-direction: row;
+    margin-left: 15px;
+    width: auto;
 
 }
 /* .el-table .black-row{
