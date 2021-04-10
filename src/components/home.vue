@@ -17,8 +17,9 @@
 
         </el-header>
         <el-container>
-            <el-aside class="sidebar" style="width:20%">
-                <el-scrollbar :class="scroll">
+            <el-aside class="sidebar" style="width:15%">
+                <el-scrollbar  style="height: 100%; color:#fff" :native="false" wrapStyle=""  wrapClass="" viewClass="" viewStyle="" :noresize="false" tag="section"
+                >
                  <el-menu :unique-opened="true"  router="true"
                       theme="dark"
                       :default-active="menuIndex.path"
@@ -30,8 +31,6 @@
 
                 > 
                 
-
-
             <el-menu-item :key="menuIndex.path" :index="menuIndex.path">
                 <span>{{menuIndex.name}}</span>
                 
@@ -113,6 +112,30 @@ export default{
                       path: "orderinfomange",
                       name: "订单信息",
                     },
+                    {
+                      path: "orderinfomange",
+                      name: "订单信息",
+                    },
+                    {
+                      path: "orderinfomange",
+                      name: "订单信息",
+                    },
+                    {
+                      path: "orderinfomange",
+                      name: "订单信息",
+                    },
+                    {
+                      path: "orderinfomange",
+                      name: "订单信息",
+                    },
+                    {
+                      path: "orderinfomange",
+                      name: "订单信息",
+                    },
+                    {
+                      path: "orderinfomange",
+                      name: "订单信息",
+                    },
                   ],
                 },
 
@@ -167,8 +190,6 @@ export default{
 </script>
 
 
-
-
 <style scoped>
 
 .container {
@@ -183,15 +204,17 @@ export default{
 }
 .sidebar{
     background: #3a3a3a;
-    color: #fff;
+    /* color: #fff; */
     height: 100%;
 }
 .main{
-    color: #212121;
     height: 100%;
-    background-color: #212121;
+    background-color:white;
+    padding: 0;
     
 }
+
+
 
 .headerLogo {
   line-height: 60px;
@@ -207,6 +230,11 @@ export default{
 .menu {
   background: none;
   color: #fff;
+  
+}
+
+.el-scrollbar__wrap{
+  overflow-x: hidden;
 }
 
 

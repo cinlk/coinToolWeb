@@ -12,5 +12,6 @@ export default {
 
 .main{
     color: red;
+    background-color:tan;
 }
 </style>
