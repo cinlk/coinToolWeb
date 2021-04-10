@@ -1,12 +1,20 @@
 <template>
   <div id="root">
     <div id="head">
-      <div style="font-weight:bolder;">OTC套利工具{{(track.dataSourceIndex== 0 || track.dataSourceIndex == 1)?"--火币":"--OK欧易"}}</div>
-      <div style="font-size: 12px;">
-        买入USDT价：<el-input-number style="margin-right:15px;" v-model="usdtPrice.buy" controls-position="right" :min="1.00" :max="1000.00" :precision="2" :step="0.01" size="mini"></el-input-number>
-        卖出USDT价：<el-input-number v-model="usdtPrice.sell" controls-position="right" :min="1.00" :max="1000.00" :precision="2" :step="0.01" size="mini"></el-input-number>
-        <el-button style="margin-left:50px;" type="primary" @click="showSettingDialog" icon="el-icon-s-tools" size="mini">设置</el-button>
+      <!-- <div style="font-weight:bolder;">OTC套利工具{{(track.dataSourceIndex== 0 || track.dataSourceIndex == 1)?"--火币":"--OK欧易"}}</div> -->
+      <div style="margin-right:20px">
+        USDT买入 <el-input-number style="margin-right:10px;" v-model="usdtPrice.buy" controls-position="right" :min="5.00" :max="15.00" :precision="2" :step="0.01" size="mini"></el-input-number>
+        卖出 <el-input-number v-model="usdtPrice.sell" controls-position="right" :min="5.00" :max="15.00" :precision="2" :step="0.01" size="mini"></el-input-number>
+        <el-button style="margin-left:10px;" type="primary" @click="showSettingDialog" icon="el-icon-s-tools" size="mini">设置</el-button>
       </div>
+  
+      <div >角色 {{ role }}</div>
+      <div>费率 {{userFee }}</div>
+      <div class="tradePrice">
+          <div>实时价格1</div>
+          <div>实时价格2</div>
+      </div>
+      
       
     </div>
     <div id="body">
@@ -18,7 +26,7 @@
           <div class="otc-ad">
             <el-table
             
-              max-height="650"
+              max-height="640"
               size="mini"
               
               border
@@ -46,7 +54,7 @@
               </el-table-column>
             </el-table>
             <el-table
-              max-height="650"
+              max-height="640"
               size="mini"
               :style="maxWidhStyle(item)"
               border
@@ -119,20 +127,20 @@
     </el-dialog>
 
     <el-dialog
-      title="行显示设置"
+      title="挂单姓名匹配"
       :visible.sync="otcSettingVisible"
       width="50%">
       <!-- <span>这是一段信息</span> -->
-      <el-form ref="otcSettingForm" label-width="100px" label-position="left">
-        <el-form-item label="红色高亮">
-          <el-input v-model="otcSettingForm.redName" placeholder="请输入要高亮显示的昵称"></el-input>
+      <el-form ref="otcSettingForm" label-width="50px" label-position="left">
+        <el-form-item label="名称">
+          <el-input v-model.trim="otcSettingForm.name" placeholder="输入名称。多个名称以;隔开"></el-input>
         </el-form-item>
-        <el-form-item label="蓝色高亮">
+        <!-- <el-form-item label="蓝色高亮">
           <el-input v-model="otcSettingForm.blueName" placeholder="请输入要高亮显示的昵称"></el-input>
         </el-form-item>
         <el-form-item label="绿色高亮">
           <el-input v-model="otcSettingForm.greenName" placeholder="请输入要高亮显示的昵称"></el-input>
-        </el-form-item>
+        </el-form-item> -->
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="otcSettingVisible = false">取 消</el-button>
@@ -180,9 +188,9 @@ export default {
         fee:0
       },
       otcSettingForm:{
-        redName:"",
-        blueName:"",
-        greenName:"",
+        name:"",
+        // blueName:"",
+        // greenName:"",
       }
     };
   },
@@ -277,13 +285,17 @@ export default {
     },
     otcRowClassName: function({row,}) {
       // 模糊匹配颜色行选择
-      if(this.otcSettingForm.redName && row.name.match(new RegExp(this.otcSettingForm.redName, "gi")))
-        return "red-row";
-      if(this.otcSettingForm.blueName && row.name.match(new RegExp(this.otcSettingForm.blueName, "gi")))
-        return "blue-row";
-      if(this.otcSettingForm.greenName && row.name.match(new RegExp(this.otcSettingForm.greenName, "gi")))
-        return "green-row"; 
-      return 'black-row';
+      if (this.otcSettingForm.name == ""){
+          return '';
+      }
+      let names = this.otcSettingForm.name.split(";")
+     
+      for (var n in names){
+            if(names[n] == row.name && row.otcRowClassName != "success-row")
+                return "success-row";
+      }
+      
+      return '';
     },
     maxWidhStyle: function (item) {
         let style = {
@@ -406,13 +418,12 @@ body{
 #head {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
   width: 100%;
-  height: 50px;
-  padding-left: 5%;
-  padding-right: 5%;
-  font-size: 20px;
+  height: 45px;
+  padding-left: 2%;
+  font-size: 13px;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
 }
@@ -455,7 +466,14 @@ body{
   background: #FFFFFF;
   
 } */
-.el-table .black-row{
+.tradePrice {
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    flex-direction: row;
+
+}
+/* .el-table .black-row{
   color: #303133;
 }
 .el-table .red-row{
@@ -466,7 +484,7 @@ body{
 }
 .el-table .green-row{
   color:#13ce66;
-}
+} */
 
 .el-table .cell {
   line-height: 16px;
@@ -475,6 +493,9 @@ body{
   font-size: 10px;
 }
 
+.el-table .success-row {
+      background: #f0f9eb;
+    }
 /* el-table th{
   background-color: #E6A23C;
 }

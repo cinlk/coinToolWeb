@@ -1,6 +1,6 @@
 <template>
     <el-container class="container">
-        <el-header class="header">
+        <el-header class="header" style="height:40px">
               <el-row>
                   <el-col :span="16" class="headerLogo">
                       <div class="grid-content bg-purple">
@@ -17,13 +17,19 @@
 
         </el-header>
         <el-container>
-            <el-aside class="sidebar" style="width:15%">
+            <el-aside class="sidebar" :width="isCollapse? '64px':'180px'">
+
+                <div class="toggle-button" @click="toggleCollapse">|||</div>
+
                 <el-scrollbar  style="height: 100%; color:#fff" :native="false" wrapStyle=""  wrapClass="" viewClass="" viewStyle="" :noresize="false" tag="section"
                 >
+
                  <el-menu :unique-opened="true"  router="true"
                       theme="dark"
                       :default-active="menuIndex.path"
                       class="menu"
+                      :collapse="isCollapse"
+                      :collapse-transition="false"
                       background-color=" #3A3A3A"
                       text-color="#fff"
                       active-text-color="#ffd04b"
@@ -76,6 +82,7 @@ export default{
 
     data() {
         return {
+            isCollapse: false,
             style: {
                 display: "block",
             },
@@ -182,6 +189,10 @@ export default{
           this.style.display = "none";
         },
 
+        toggleCollapse() {
+            this.isCollapse = !this.isCollapse
+        }
+
 
     }
 };
@@ -198,8 +209,9 @@ export default{
 }
 
 .header{
-    background: #212121;
+    background: darkcyan;
     color: #fff;
+    
 
 }
 .sidebar{
@@ -217,12 +229,12 @@ export default{
 
 
 .headerLogo {
-  line-height: 60px;
-  margin-top: 10px;
+  line-height: 40px;
+  margin-top: 5px;
 }
 
 .userInfo {
-  line-height: 60px;
+  line-height: 40px;
   text-align: center;
 }
 
@@ -235,6 +247,17 @@ export default{
 
 .el-scrollbar__wrap{
   overflow-x: hidden;
+}
+
+
+.toggle-button {
+    background-color: #4a5064;
+    font-size: 10px;
+    line-height: 24px;
+    color: #fff;
+    text-align: center;
+    letter-spacing: 0.2em;
+    cursor: pointer;
 }
 
 
