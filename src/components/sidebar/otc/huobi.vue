@@ -12,8 +12,11 @@
       <div style="color:darkmagenta; margin-left:15px"> 你的 otc费率是 {{settingForm.otcfee }}, 币币费率是 {{settingForm.coinfee}}  </div>
       
       <div class="tradePrice">
-          <div>实时价格1</div>
-          <div>实时价格2</div>
+          <div style="margin: 0 5px; " v-for="(item, index) in setting.realtimePrice" :key="index">
+              <div>{{item +"价格: "}} {{ marketTrade[item]&&marketTrade[item].price ?  marketTrade[item].price : ""}}</div>
+          </div>
+          <!-- <div>实时价格1</div>
+          <div>实时价格2</div> -->
       </div>
       
       
@@ -92,8 +95,8 @@
         </el-form-item>
 
         <el-form-item label="表格数据条数" >
-            <el-radio v-model="settingForm.count" :label="10">10</el-radio>
-            <el-radio v-model="settingForm.count" :label="20">20</el-radio>
+            <el-radio v-model="settingForm.count" :label="10">前10</el-radio>
+            <el-radio v-model="settingForm.count" :label="20">前20</el-radio>
 
         </el-form-item>
 
@@ -216,14 +219,14 @@ export default {
       otcSettingVisible: false,
 
       setting:{
-        realtimePrice:["btcusdt"],//btcusdt,ltcusdt
-        otc:["usdtrmb","btcrmb",],//btcrmb,ltcrmb,usdtrmb
+        realtimePrice:[],//btcusdt,ltcusdt
+        otc:["usdtrmb"],//btcrmb,ltcrmb,usdtrmb
         otcfee:0,
         coinfee:0,
         count:20,
       },
       settingForm:{
-        realtimePrice:[],
+        //realtimePrice:[],
         otc:[],
         feeVisiable:"",
         otcfee:0,
@@ -251,7 +254,7 @@ export default {
       ]
     };
   },
-  computed: mapState(["track","otcDepth","marketDepth","usdtPrice"]),
+  computed: mapState(["track","otcDepth","marketDepth","usdtPrice", "marketTrade"]),
   directives: {
     drag(el){
       let oDiv = el; //当前元素
@@ -302,14 +305,22 @@ export default {
     },
     showSettingDialog: function(){
       this.settingDialogVisible = true
-      this.settingForm.realtimePrice = this.setting.realtimePrice
+      //this.settingForm.realtimePrice = this.setting.realtimePrice
       this.settingForm.otc = this.setting.otc
       this.settingForm.fee = this.setting.fee
     },
     settingConfirm: function(){
       this.settingDialogVisible = false
-      this.setting.realtimePrice = this.settingForm.realtimePrice
       this.setting.otc = this.settingForm.otc
+      this.setting.realtimePrice  = []
+      for (var idx in this.settingForm.otc){
+          if (this.settingForm.otc[idx] == "usdtrmb"){
+            continue
+          }
+          this.setting.realtimePrice.push(this.settingForm.otc[idx].slice(0,-3) + "usdt")
+      }
+      //this.setting.realtimePrice = this.settingForm.realtimePrice
+
       this.setting.fee = this.settingForm.fee
       this.setting.count = this.settingForm.count
       this.$message({
@@ -368,8 +379,12 @@ export default {
         }
         if (item == 'usdtrmb'){
             return style
+        }else if (item == "htrmb" || item == "eosrmb"){
+          style.maxWidth = "310px"
+        }else{
+          style.maxWidth = "330px"
         }
-        style.maxWidth = "330px"
+        
         return style
     },
     otcCellStyle: function({row, column,}){
@@ -442,6 +457,8 @@ export default {
     columnWidth: function (item) {
         if (item == 'usdtrmb'){
             return 50
+        }else if ( item == "htrmb" || item == "eosrmb"){
+          return 60
         }
         return 80
 
@@ -536,7 +553,9 @@ body{
     flex-wrap: wrap;
     flex-direction: row;
     margin-left: 15px;
-    width: auto;
+    width: 35%;
+    font-size: 10px;
+    line-height: 15px;
 
 }
 /* .el-table .black-row{

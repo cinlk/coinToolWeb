@@ -32,13 +32,14 @@ export default new Vuex.Store({
                 'ws://103.118.42.205:7001/ws', //火币后端，lk的
             ],
             sub_huobi:{//基于火币网的数据订阅
-                otcRmb:["usdtrmb","btcrmb","ethrmb","htrmb"],//订阅的otc数据   "eosrmb"
-                depthUsdt:["btcusdt","ethusdt","htusdt"]//行情数据  "eosusdt"
+                otcRmb:["usdtrmb","btcrmb","ethrmb","htrmb","eosrmb"],//订阅的otc数据   "eosrmb"
+                depthUsdt:["btcusdt","ethusdt","htusdt","eosusdt"],//行情盘口数据  "eosusdt"
+                TradeUsdt:["btcusdt","ethusdt","htusdt","eosusdt"] // 实时币币交易数据
             },
-            sub_ok:{//基于ok的数据订阅
-                otcRmb:["usdtrmb","btcrmb","ethrmb","okbrmb"],
-                depthUsdt:["btcusdt","ethusdt","okbusdt"]
-            }
+            // sub_ok:{//基于ok的数据订阅
+            //     otcRmb:["usdtrmb","btcrmb","ethrmb","okbrmb"],
+            //     depthUsdt:["btcusdt","ethusdt","okbusdt"]
+            // }
         },
         socket: {
             isConnected: false,
@@ -55,7 +56,11 @@ export default new Vuex.Store({
             "btcusdt":{
                 bids:[], //对应的是行情里面的买一买二...
                 asks:[], //对应的是行情里面的卖一卖二...
+                
             }
+        },
+        marketTrade: { // 行情实时成交价 取第一个价格
+               "btcustr":{}
         },
         usdtPrice: {//买卖usdt价
             buy:10,
@@ -85,6 +90,15 @@ export default new Vuex.Store({
                         exchange: "huobi",
                     })
                 })
+                state.track.sub_huobi.TradeUsdt.forEach(element => {
+                    subs.push({
+                        sub: "market."+element+".trade",
+                        exchange: "huobi",
+                    })
+                })
+
+
+
             } else if(state.track.dataSourceIndex == 2 ){//ok
                 state.track.sub_ok.otcRmb.forEach(element => {
                     subs.push({
@@ -182,7 +196,12 @@ export default new Vuex.Store({
                             //let profix = 10000 / state.usdtPrice.buy / state.marketDepth[marketCoinb].asks[0].price * element.price - 10000 //10000rmb循环一遍的利润
                             if(state.track.log.is_profix_base_10000==false){//套利以币自身计算
                                 //profix = (profix * element.price / 10000).toFixed(2)
-                                element.profix = profix.toFixed(0)
+                                if (marketCoinb == "btcusdt" || marketCoinb == "ethusdt"){
+                                    element.profix = profix.toFixed(0)
+                                }else{
+                                    element.profix = profix.toFixed(2)
+                                }
+                               
                                 if(state.track.log.open_log && element.profix / costPrice >= state.track.log.log_profix_base_coin){
                                     state.sell_count==null?state.sell_count=0:state.sell_count++
                                     let msg = "币 " +  marketCoinb + "利润大于1%, 操作 rmb买入u换成币卖出rmb " + "利润值 " + String(profix) 
@@ -191,7 +210,7 @@ export default new Vuex.Store({
                                     console.log(new Date().toTimeString().substring(0,8),state.sell_count,"利润>="+state.track.log.log_profix_base_coin,"卖出"+otcCoinb, element.profix,element.size,element.price, element.size * element.price)
                                 }
                             } else if (state.track.log.is_profix_base_10000){//套利以10000rmb计算
-                                profix = profix.toFixed(0)
+                                profix = profix.toFixed(2)
                                 element.profix = profix
                                 if(state.track.log.open_log && element.profix >= state.track.log.log_profix_base_10000){
                                     state.sell_count==null?state.sell_count=0:state.sell_count++
@@ -224,7 +243,14 @@ export default new Vuex.Store({
                             //let profix = 10000 / element.price * state.marketDepth[marketCoinb].bids[0].price * state.usdtPrice.sell - 10000
                             if(state.track.log.is_profix_base_10000 == false){//套利以币自身计算
                                 //profix = (profix * element.price / 10000).toFixed(2)
-                                element.profix = profix.toFixed(0)
+
+                                if (marketCoinb == "btcusdt" || marketCoinb == "ethusdt"){
+                                    element.profix = profix.toFixed(0)
+                                }else{
+                                    element.profix = profix.toFixed(2)
+                                }
+
+                                //element.profix = profix.toFixed(2)
                                 if(state.track.log.open_log && element.profix  / costPrice >= state.track.log.log_profix_base_coin){
                                     state.buy_count==null?state.buy_count=0:state.buy_count++
                                     // 短信微信通知 TODO
@@ -235,7 +261,7 @@ export default new Vuex.Store({
                                 }
                             } else if (state.track.log.is_profix_base_10000 == true){
                                 //profix = profix.toFixed(2)
-                                element.profix = profix.toFixed(0)
+                                element.profix = profix.toFixed(2)
                                 if(state.track.log.open_log && element.profix >= state.track.log.log_profix_base_10000){
                                     state.buy_count==null?state.buy_count=0:state.buy_count++
                                     console.log(new Date().toTimeString().substring(0,8),state.buy_count,"利润>="+state.track.log.log_profix_base_10000,"买入"+otcCoinb, element.profix,element.size,element.price,element.size * element.price)
@@ -249,7 +275,7 @@ export default new Vuex.Store({
                 }
             }
 
-            if(ch[1].match(/rmb$/g)){
+            if(ch.length > 1 && ch[1].match(/rmb$/g)){
                 // market.btcrmb.depth.20 otc行情
                 state.otcDepth[ch[1]] = message.data;
                 if(ch[1] == "usdtrmb"){
@@ -257,10 +283,14 @@ export default new Vuex.Store({
                 }
                 computeProfix();
             }
-            if(ch[3].match(/^step0$/g)){
+            else if(ch.length > 3 && ch[3].match(/^step0$/g)){
                 // market.eosusdt.depth.step0 币币交易行情
                 state.marketDepth[ch[1]] = message.data;
                 computeProfix();
+            }
+            else if(ch.length > 2 && ch[2].match(/^trade$/g)){
+                // market.xxusdt.trade 实时交易数据
+                state.marketTrade[ch[1]] = message.data
             }
         },
         // mutations for reconnect methods
