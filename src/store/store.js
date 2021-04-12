@@ -26,11 +26,18 @@ export default new Vuex.Store({
                 log_profix_base_coin: 0.01,//基于币价的话，利润百分之一以上
                 log_profix_base_10000: 60,//基于10000的话，利润60以上就显示日志
             },
-            show_guadan:true,//是否显示买卖一价挂单的利润
+            //show_guadan:true,//是否显示买卖一价挂单的利润
             dataSourceIndex: 0, // 由下面的dataSource的索引来区分
             dataSource:[
                 'ws://103.118.42.205:7001/ws', //火币后端，lk的
             ],
+            // 交易费用
+            tradeFee: {
+                userType: 1,  // 1 代表散户看盘, 2 代表广告商看盘
+                otcFee:0,
+                coinFee:0
+            },
+
             sub_huobi:{//基于火币网的数据订阅
                 otcRmb:["usdtrmb","btcrmb","ethrmb","htrmb","eosrmb"],//订阅的otc数据   "eosrmb"
                 depthUsdt:["btcusdt","ethusdt","htusdt","eosusdt"],//行情盘口数据  "eosusdt"
@@ -60,7 +67,7 @@ export default new Vuex.Store({
             }
         },
         marketTrade: { // 行情实时成交价 取第一个价格
-               "btcustr":{}
+               "btcusdt":{}
         },
         usdtPrice: {//买卖usdt价
             buy:10,
@@ -144,10 +151,7 @@ export default new Vuex.Store({
             } catch(err) {
                 return
             }
-            
-            // 手续费
-            const otcRate = 0 
-            const coinRate = 0.002
+           
 
             const ch = message.ch.split(".")
             
@@ -180,34 +184,35 @@ export default new Vuex.Store({
                         // 币的otc 商家购买出(用户卖出) 数据遍历
                     state.otcDepth[otcCoinb].bids.forEach(element => {
                         if(element.price){
-                            //利润，假设投入10000rmb将的到多少利润
-                            //otc 买usdtrmb（以卖一价）> 币币交易 买btcusdt(以卖一价) > otc 卖btcrmb（以买n价）
-                            // element.profix = (10000 / state.otcDepth["usdtrmb"].asks[0].price / state.marketDepth[marketCoinb].asks[0].price * element.price - 10000).toFixed(2)
-                            //otc 买usdtrmb(以设定的肯买价)> 币币交易 买btcusdt(以卖一价) > otc 卖btcrmb（以买n价）
-                            
-                            let costPrice =  state.usdtPrice.buy * state.marketDepth[marketCoinb].bids[0].price * (1+otcRate) * (1+coinRate)
-
-                            let sellPrice =  element.price*(1-otcRate)
-
+                     
+                            var tradePrice = state.marketTrade[marketCoinb] ? state.marketTrade[marketCoinb].price : state.marketDepth[marketCoinb].bids[0].price  
+                            var costPrice = 0 
+                            var sellPrice = 0
+                            // otc 市场的usdt 广告商的费率为0，散户也为0
+                            if (state.track.tradeFee.userType == 1 ){
+                                costPrice =  state.usdtPrice.buy * tradePrice  * (1+state.track.tradeFee.coinFee)
+                                sellPrice =  element.price*(1-state.track.tradeFee.otcFee)
+                            }else{
+                                costPrice = element.price*(1+state.track.tradeFee.otcFee)
+                                sellPrice = state.usdtPrice.sell * tradePrice * (1 - state.track.tradeFee.coinFee)
+                            }
+                  
                             let profix = sellPrice - costPrice
-                            
-                        
-
-                            //let profix = 10000 / state.usdtPrice.buy / state.marketDepth[marketCoinb].asks[0].price * element.price - 10000 //10000rmb循环一遍的利润
+                    
+                       
                             if(state.track.log.is_profix_base_10000==false){//套利以币自身计算
-                                //profix = (profix * element.price / 10000).toFixed(2)
                                 if (marketCoinb == "btcusdt" || marketCoinb == "ethusdt"){
-                                    element.profix = profix.toFixed(0)
+                                    element.profix = profix.toFixed(1)
                                 }else{
                                     element.profix = profix.toFixed(2)
                                 }
                                
                                 if(state.track.log.open_log && element.profix / costPrice >= state.track.log.log_profix_base_coin){
                                     state.sell_count==null?state.sell_count=0:state.sell_count++
-                                    let msg = "币 " +  marketCoinb + "利润大于1%, 操作 rmb买入u换成币卖出rmb " + "利润值 " + String(profix) 
-                                    sendAlert(msg)
+                                    //let msg = "币 " +  marketCoinb + "利润大于1%, 操作 rmb买入u换成币卖出rmb " + "利润值 " + String(profix) 
+                                    //sendAlert(msg)
                                     
-                                    console.log(new Date().toTimeString().substring(0,8),state.sell_count,"利润>="+state.track.log.log_profix_base_coin,"卖出"+otcCoinb, element.profix,element.size,element.price, element.size * element.price)
+                                    //console.log(new Date().toTimeString().substring(0,8),state.sell_count,"利润>="+state.track.log.log_profix_base_coin,"卖出"+otcCoinb, element.profix,element.size,element.price, element.size * element.price)
                                 }
                             } else if (state.track.log.is_profix_base_10000){//套利以10000rmb计算
                                 profix = profix.toFixed(2)
@@ -230,34 +235,37 @@ export default new Vuex.Store({
                         // 币的otc 商家卖出(用户购买) 数据遍历
                         state.otcDepth[otcCoinb].asks.forEach(element => {
                         if(element.price){
-                            //利润，假设投入10000rmb将的到多少利润
-                            //otc 买btcrmb（以卖n价）> 币币交易 卖btcusdt(以买一价) > otc 卖usdtrmb（以买一价） 
-                            // element.profix = (10000 / element.price * state.marketDepth[marketCoinb].bids[0].price * state.otcDepth["usdtrmb"].bids[0].price - 10000).toFixed(2)
-                            //otc 买btcrmb（以卖n价）> 币币交易 卖btcusdt(以买一价) > otc 卖usdtrmb（以设定的肯卖价） 
+                          
+
+                            var tradePrice = state.marketTrade[marketCoinb] ? state.marketTrade[marketCoinb].price : state.marketDepth[marketCoinb].asks[0].price  
+                            // otc 市场的usdt 广告商的费率为0，散户也为0
+                            var costPrice = 0 
+                            var sellPrice = 0 
+                            if (state.track.tradeFee.userType == 1){
+                                costPrice = element.price * (1 + state.track.tradeFee.otcFee)
+                                sellPrice =  tradePrice * state.usdtPrice.sell*(1 - state.track.tradeFee.coinFee)
+                            }else{
+                                sellPrice = element.price *(1-state.track.tradeFee.otcFee)
+                                costPrice = tradePrice * state.usdtPrice.buy*(1 + state.track.tradeFee.coinFee) 
+                            }
                             
-                            let costPrice = element.price * (1 + otcRate)
-                            let sellPrice =  state.marketDepth[marketCoinb].asks[0].price * state.usdtPrice.sell*(1 - coinRate)
-                            let profix = sellPrice - costPrice
-                            //element.profix = sellPrice - costPrice
-                            
-                            //let profix = 10000 / element.price * state.marketDepth[marketCoinb].bids[0].price * state.usdtPrice.sell - 10000
+                            let profix = sellPrice - costPrice     
                             if(state.track.log.is_profix_base_10000 == false){//套利以币自身计算
-                                //profix = (profix * element.price / 10000).toFixed(2)
 
                                 if (marketCoinb == "btcusdt" || marketCoinb == "ethusdt"){
-                                    element.profix = profix.toFixed(0)
+                                    element.profix = profix.toFixed(1)
                                 }else{
                                     element.profix = profix.toFixed(2)
                                 }
 
-                                //element.profix = profix.toFixed(2)
+                    
                                 if(state.track.log.open_log && element.profix  / costPrice >= state.track.log.log_profix_base_coin){
                                     state.buy_count==null?state.buy_count=0:state.buy_count++
                                     // 短信微信通知 TODO
-                                    let msg = "币 " +  marketCoinb + "利润大于1%, 操作 rmb买入币换成u在卖出rmb " + "利润值 " + String(profix) 
-                                    sendAlert(msg)
+                                    //let msg = "币 " +  marketCoinb + "利润大于1%, 操作 rmb买入币换成u在卖出rmb " + "利润值 " + String(profix) 
+                                    //sendAlert(msg)
 
-                                    console.log(new Date().toTimeString().substring(0,8),state.buy_count,"利润>="+state.track.log.log_profix_base_coin,"买入"+otcCoinb, element.profix,element.size,element.price,element.size * element.price)
+                                    //console.log(new Date().toTimeString().substring(0,8),state.buy_count,"利润>="+state.track.log.log_profix_base_coin,"买入"+otcCoinb, element.profix,element.size,element.price,element.size * element.price)
                                 }
                             } else if (state.track.log.is_profix_base_10000 == true){
                                 //profix = profix.toFixed(2)

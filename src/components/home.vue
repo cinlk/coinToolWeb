@@ -124,31 +124,7 @@ export default{
                     {
                       path: "orderinfomange",
                       name: "订单信息",
-                    },
-                    {
-                      path: "orderinfomange",
-                      name: "订单信息",
-                    },
-                    {
-                      path: "orderinfomange",
-                      name: "订单信息",
-                    },
-                    {
-                      path: "orderinfomange",
-                      name: "订单信息",
-                    },
-                    {
-                      path: "orderinfomange",
-                      name: "订单信息",
-                    },
-                    {
-                      path: "orderinfomange",
-                      name: "订单信息",
-                    },
-                    {
-                      path: "orderinfomange",
-                      name: "订单信息",
-                    },
+                    }
                   ],
                 },
 

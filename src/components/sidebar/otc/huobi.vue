@@ -8,8 +8,8 @@
         <el-button style="margin-left:10px;" type="primary" @click="showSettingDialog" icon="el-icon-s-tools" size="mini">设置</el-button>
       </div>
   
-      <div style="color:darkmagenta"> 模式: {{ settingForm.userType == 1 ? '散户看盘,' : '广告商看盘,' }}  </div>
-      <div style="color:darkmagenta; margin-left:15px"> 你的 otc费率是 {{settingForm.otcfee }}, 币币费率是 {{settingForm.coinfee}}  </div>
+      <div style="color:darkmagenta"> 模式: {{ settingForm.userType == 1 ? '散户看盘' : '广告商看盘' }}  </div>
+      <div style="color:darkmagenta; margin-left:10px">otc手续费 {{settingForm.otcfee }}, 币币手续费 {{settingForm.coinfee}}  </div>
       
       <div class="tradePrice">
           <div style="margin: 0 5px; " v-for="(item, index) in setting.realtimePrice" :key="index">
@@ -50,7 +50,7 @@
                 </template>
               </el-table-column>
 
-              <el-table-column :label="item.toUpperCase().substr(0,item.length-3) + ' 购买广告'" align="center"  >
+              <el-table-column :label="item.toUpperCase().substr(0,item.length-3)  +' 购买广告' + (settingForm.userType === 1 ? '(散户卖出)':'')  " align="center"  >
                 <el-table-column prop="price" label="价格" show-overflow-tooltip  :width="columnWidth(item)"   > </el-table-column>
                 <el-table-column prop="profix" label="利润" v-if="item !=='usdtrmb'" show-overflow-tooltip width="70"> </el-table-column>
                 <el-table-column prop="size" label="数量" show-overflow-tooltip width="80"> </el-table-column>
@@ -67,7 +67,7 @@
               :cell-style="otcCellStyle"
               :header-cell-style="otcHeaderCellStyleSell"
             >
-              <el-table-column :label="item.toUpperCase().substr(0,item.length-3) + ' 出售广告'" align="center">
+              <el-table-column :label="item.toUpperCase().substr(0,item.length-3) + ' 出售广告' +  (settingForm.userType == 1 ? '(散户买入)':'') " align="center">
                 <el-table-column prop="price" label="价格" show-overflow-tooltip :width="columnWidth(item)"> </el-table-column>
                 <el-table-column prop="profix" label="利润" v-if="item !=='usdtrmb'" show-overflow-tooltip width="70"></el-table-column>
                 <el-table-column prop="size" label="数量" show-overflow-tooltip width="80"> </el-table-column>
@@ -142,7 +142,7 @@
 
       
 
-        <el-form-item label="颜色习惯" :inline-message="true">
+        <el-form-item label="利润颜色" :inline-message="true">
           <div style="display: flex;flex-direction: row; justify-content: start; align-items:center; height: 100%; width:100%;">
             <el-switch
               style="display: block; height:100%; line-height: 100%;"
@@ -232,7 +232,8 @@ export default {
         otcfee:0,
         coinfee:0,
         count:20,
-        userType:1,
+        userType:1, // 1 是散户  2 是广告商
+        
       },
       otcSettingForm:{
         name:"",
@@ -242,15 +243,21 @@ export default {
       otcFees:[
           {value: 0, label: 0},
           {value: 0.002, label: 0.002},
+          {value: 0.001, label: 0.001},
           {value: 0.0008, label: 0.0008},
-          {value: 0.0002, label: 0.0002},
+          {value: 0.0004, label: 0.0004},
           
       ],
       coinFees:[
           {value: 0, label: 0},
           {value: 0.002, label: 0.002},
+          {value: 0.0018, label: 0.0018},
+          {value: 0.0016, label: 0.0016},
+          {value: 0.0012, label: 0.0012},
+          {value: 0.0009, label: 0.0009},
           {value: 0.0008, label: 0.0008},
-          {value: 0.0002, label: 0.0002},
+          {value: 0.0007, label: 0.0007},
+          {value: 0.0004, label: 0.0004},
       ]
     };
   },
@@ -319,9 +326,15 @@ export default {
           }
           this.setting.realtimePrice.push(this.settingForm.otc[idx].slice(0,-3) + "usdt")
       }
+
+      this.track.tradeFee.otcFee = this.settingForm.otcfee
+      this.track.tradeFee.coinFee = this.settingForm.coinfee
+      this.track.tradeFee.userType = this.settingForm.userType
+
       //this.setting.realtimePrice = this.settingForm.realtimePrice
 
-      this.setting.fee = this.settingForm.fee
+      //this.setting.fee = this.settingForm.fee
+
       this.setting.count = this.settingForm.count
       this.$message({
                        showClose: true,
@@ -347,7 +360,7 @@ export default {
       if(column.type == "index"){
         return {textAlign: 'center'}
       }
-      return {textAlign: 'center',  color: (this.colorSelect ? this.style.redColor : this.style.greenColor)}
+      return {textAlign: 'center',  color: this.style.greenColor}
     },
     otcHeaderCellStyleSell: function({row, column, rowIndex, columnIndex}){
       // 设定表头红涨绿跌or相反
@@ -355,7 +368,7 @@ export default {
       if(column.type == "index"){
         return {textAlign: 'center'}
       }
-      return {textAlign: 'center', color: (this.colorSelect ? this.style.greenColor : this.style.redColor)}
+      return {textAlign: 'center', color:  this.style.redColor}
     },
     otcRowClassName: function({row,}) {
       // 模糊匹配颜色行选择
