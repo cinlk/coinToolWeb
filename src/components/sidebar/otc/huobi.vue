@@ -8,8 +8,8 @@
         <el-button style="margin-left:10px;" type="primary" @click="showSettingDialog" icon="el-icon-s-tools" size="mini">设置</el-button>
       </div>
   
-      <div style="color:darkmagenta"> 模式: {{ settingForm.userType == 1 ? '散户看盘' : '广告商看盘' }}  </div>
-      <div style="color:darkmagenta; margin-left:10px">otc手续费 {{settingForm.otcfee }}, 币币手续费 {{settingForm.coinfee}}  </div>
+      <div style="color:darkmagenta"> 模式: {{ setting.userType == 1 ? '散户看盘' : '广告商看盘' }}  </div>
+      <div style="color:darkmagenta; margin-left:10px">otc手续费 {{setting.otcfee }}, 币币手续费 {{setting.coinfee}}  </div>
       
       <div class="tradePrice">
           <div style="margin: 0 5px; " v-for="(item, index) in setting.realtimePrice" :key="index">
@@ -34,7 +34,7 @@
               size="mini"
               
               border
-              :data="otcDepth[item] ? otcDepth[item].bids.slice(0, settingForm.count) : []"
+              :data="otcDepth[item] ? otcDepth[item].bids.slice(0, setting.count) : []"
               :row-class-name="otcRowClassName"
               :cell-style="otcCellStyle"
               :header-cell-style="otcHeaderCellStyleBuy"
@@ -50,7 +50,7 @@
                 </template>
               </el-table-column>
 
-              <el-table-column :label="item.toUpperCase().substr(0,item.length-3)  +' 购买广告' + (settingForm.userType === 1 ? '(散户卖出)':'')  " align="center"  >
+              <el-table-column :label="item.toUpperCase().substr(0,item.length-3)  +' 购买广告' + (setting.userType === 1 ? '(散户卖出)':'')  " align="center"  >
                 <el-table-column prop="price" label="价格" show-overflow-tooltip  :width="columnWidth(item)"   > </el-table-column>
                 <el-table-column prop="profix" label="利润" v-if="item !=='usdtrmb'" show-overflow-tooltip width="70"> </el-table-column>
                 <el-table-column prop="size" label="数量" show-overflow-tooltip width="80"> </el-table-column>
@@ -62,12 +62,12 @@
               size="mini"
               :style="maxWidhStyle(item)"
               border
-              :data="otcDepth[item] ? otcDepth[item].asks.slice(0, settingForm.count) : []"
+              :data="otcDepth[item] ? otcDepth[item].asks.slice(0, setting.count) : []"
               :row-class-name="otcRowClassName"
               :cell-style="otcCellStyle"
               :header-cell-style="otcHeaderCellStyleSell"
             >
-              <el-table-column :label="item.toUpperCase().substr(0,item.length-3) + ' 出售广告' +  (settingForm.userType == 1 ? '(散户买入)':'') " align="center">
+              <el-table-column :label="item.toUpperCase().substr(0,item.length-3) + ' 出售广告' +  (setting.userType == 1 ? '(散户买入)':'') " align="center">
                 <el-table-column prop="price" label="价格" show-overflow-tooltip :width="columnWidth(item)"> </el-table-column>
                 <el-table-column prop="profix" label="利润" v-if="item !=='usdtrmb'" show-overflow-tooltip width="70"></el-table-column>
                 <el-table-column prop="size" label="数量" show-overflow-tooltip width="80"> </el-table-column>
@@ -137,18 +137,15 @@
                 </el-form-item>
             </el-col>
         </el-row>
-      
 
-
-      
 
         <el-form-item label="利润颜色" :inline-message="true">
           <div style="display: flex;flex-direction: row; justify-content: start; align-items:center; height: 100%; width:100%;">
             <el-switch
               style="display: block; height:100%; line-height: 100%;"
-              v-model="colorSelect">
+              v-model="settingForm.colorSelect">
             </el-switch>
-            <div style="font-weight: bold; margin-left: 14px;">{{colorSelect? "红涨绿跌" : "绿涨红跌"}}</div>
+            <div style="font-weight: bold; margin-left: 14px;">{{setting.colorSelect? "红涨绿跌" : "绿涨红跌"}}</div>
           </div>
         </el-form-item>
         <!-- <el-form-item label="手续费" >
@@ -214,7 +211,7 @@ export default {
         greenColor: "#13ce66",
         blackColor: "#303133",
       },
-      colorSelect: true,
+      
       settingDialogVisible: false,
       otcSettingVisible: false,
 
@@ -224,6 +221,8 @@ export default {
         otcfee:0,
         coinfee:0,
         count:20,
+        userType:1, // 1 是散户  2 是广告商
+        colorSelect: true,
       },
       settingForm:{
         //realtimePrice:[],
@@ -233,6 +232,7 @@ export default {
         coinfee:0,
         count:20,
         userType:1, // 1 是散户  2 是广告商
+        colorSelect: true,
         
       },
       otcSettingForm:{
@@ -319,14 +319,18 @@ export default {
     settingConfirm: function(){
       this.settingDialogVisible = false
       this.setting.otc = this.settingForm.otc
+      this.setting.userType = this.settingForm.userType
+      this.setting.count = this.settingForm.count
       this.setting.realtimePrice  = []
+      this.setting.colorSelect = this.settingForm.colorSelect
       for (var idx in this.settingForm.otc){
           if (this.settingForm.otc[idx] == "usdtrmb"){
             continue
           }
           this.setting.realtimePrice.push(this.settingForm.otc[idx].slice(0,-3) + "usdt")
       }
-
+      this.setting.otcfee = this.settingForm.otcfee
+      this.setting.coinfee = this.settingForm.coinfee
       this.track.tradeFee.otcFee = this.settingForm.otcfee
       this.track.tradeFee.coinFee = this.settingForm.coinfee
       this.track.tradeFee.userType = this.settingForm.userType
@@ -409,14 +413,14 @@ export default {
       }
       // 依据利润的正负设定颜色
       if(row.profix > 0 && column.label == "利润"){
-        if(this.colorSelect) {
+        if(this.setting.colorSelect) {
           style.color = this.style.redColor
         }
         else{
           style.color = this.style.greenColor
         }
       } else if(row.profix < 0 && column.label == "利润"){
-        if(this.colorSelect) {
+        if(this.setting.colorSelect) {
           style.color = this.style.greenColor
         }
         else{
