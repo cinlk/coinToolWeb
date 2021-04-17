@@ -26,8 +26,8 @@ Vue.use(VueNativeSock, wsUrl, {
     store: store,
     mutations: mutations,
     reconnection: true, // (Boolean) whether to reconnect automatically (false)
-    reconnectionAttempts: 1000, // (Number) number of reconnection attempts before giving up (Infinity),
-    reconnectionDelay: 5000, // (Number) how long to initially wait before attempting a new (1000)
+    reconnectionAttempts: 100, // (Number) number of reconnection attempts before giving up (Infinity),
+    reconnectionDelay: 2000, // (Number) how long to initially wait before attempting a new (1000)
     passToStoreHandler: function (eventName, event) { //对收到的socket的所有消息事件的前期封装操作
         // console.log("passToStoreHandler", eventName, event)
         if (!eventName.startsWith('SOCKET_')) { return }

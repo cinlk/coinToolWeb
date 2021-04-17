@@ -3,8 +3,8 @@
     <div id="head">
       <!-- <div style="font-weight:bolder;">OTC套利工具{{(track.dataSourceIndex== 0 || track.dataSourceIndex == 1)?"--火币":"--OK欧易"}}</div> -->
       <div style="margin-right:20px;">
-        USDT买入 <el-input-number style="margin-right:10px;" v-model="usdtPrice.buy" controls-position="right" :min="5.00" :max="15.00" :precision="2" :step="0.01" size="mini"></el-input-number>
-        卖出 <el-input-number v-model="usdtPrice.sell" controls-position="right" :min="5.00" :max="15.00" :precision="2" :step="0.01" size="mini"></el-input-number>
+        USDT买入 <el-input-number style="margin-right:10px;" v-model="usdtPrice[exchange].buy" controls-position="right" :min="5.00" :max="15.00" :precision="2" :step="0.01" size="mini"></el-input-number>
+        卖出 <el-input-number v-model="usdtPrice[exchange].sell" controls-position="right" :min="5.00" :max="15.00" :precision="2" :step="0.01" size="mini"></el-input-number>
         <el-button style="margin-left:10px;" type="primary" @click="showSettingDialog" icon="el-icon-s-tools" size="mini">设置</el-button>
       </div>
   
@@ -13,7 +13,7 @@
       
       <div class="tradePrice">
           <div style="margin: 0 5px; " v-for="(item, index) in setting.realtimePrice" :key="index">
-              <div>{{item +"价格: "}} {{ marketTrade[item]&&marketTrade[item].price ?  marketTrade[item].price : ""}}</div>
+              <div>{{item +"价格: "}} {{ marketTrade[exchange][item]&&marketTrade[exchange][item].price ?  marketTrade[exchange][item].price : ""}}</div>
           </div>
           <!-- <div>实时价格1</div>
           <div>实时价格2</div> -->
@@ -34,7 +34,7 @@
               size="mini"
               
               border
-              :data="otcDepth[item] ? otcDepth[item].bids.slice(0, setting.count) : []"
+              :data="otcDepth[exchange][item] ? otcDepth[exchange][item].bids.slice(0, setting.count) : []"
               :row-class-name="otcRowClassName"
               :cell-style="otcCellStyle"
               :header-cell-style="otcHeaderCellStyleBuy"
@@ -44,13 +44,13 @@
               <el-table-column label="序号"  type="index" width="35" align="left" >
                 <template slot="header">
                   <div style="display:flex;flex-direction: column;justify-content: space-between;">
-                    <button  class="setting-btn" @click="showOtcTableSetting(item)"><i class="el-icon-s-tools" style="margin-left: -8px;"></i></button>
+                    <button  class="setting-btn" @click="showOtcTableSetting()"><i class="el-icon-s-tools" style="margin-left: -8px;"></i></button>
                     <!-- <span>设置</span> -->
                   </div>
                 </template>
               </el-table-column>
 
-              <el-table-column :label="item.toUpperCase().substr(0,item.length-3)  +' 购买广告' + (setting.userType === 1 ? '(散户卖出)':'')  " align="center"  >
+              <el-table-column :label="item.toUpperCase()  +' 购买广告' + (setting.userType === 1 ? '(散户卖出)':'')  " align="center"  >
                 <el-table-column prop="price" label="价格" show-overflow-tooltip  :width="columnWidth(item)"   > </el-table-column>
                 <el-table-column prop="profix" label="利润" v-if="item !=='usdtrmb'" show-overflow-tooltip width="70"> </el-table-column>
                 <el-table-column prop="size" label="数量" show-overflow-tooltip width="80"> </el-table-column>
@@ -62,12 +62,12 @@
               size="mini"
               :style="maxWidhStyle(item)"
               border
-              :data="otcDepth[item] ? otcDepth[item].asks.slice(0, setting.count) : []"
+              :data="otcDepth[exchange][item] ? otcDepth[exchange][item].asks.slice(0, setting.count) : []"
               :row-class-name="otcRowClassName"
               :cell-style="otcCellStyle"
               :header-cell-style="otcHeaderCellStyleSell"
             >
-              <el-table-column :label="item.toUpperCase().substr(0,item.length-3) + ' 出售广告' +  (setting.userType == 1 ? '(散户买入)':'') " align="center">
+              <el-table-column :label="item.toUpperCase() + ' 出售广告' +  (setting.userType == 1 ? '(散户买入)':'') " align="center">
                 <el-table-column prop="price" label="价格" show-overflow-tooltip :width="columnWidth(item)"> </el-table-column>
                 <el-table-column prop="profix" label="利润" v-if="item !=='usdtrmb'" show-overflow-tooltip width="70"></el-table-column>
                 <el-table-column prop="size" label="数量" show-overflow-tooltip width="80"> </el-table-column>
@@ -101,23 +101,12 @@
         </el-form-item>
 
         <el-form-item label="币名称">
-          <!-- <el-checkbox-group v-model="settingForm.otc" v-if="track.dataSourceIndex== 2">
-            <el-checkbox v-for="(item, index) in track.sub_ok.otcRmb" v-bind:key="index" :label="item" name="type">{{item.toUpperCase().slice(0,-3)}}</el-checkbox>
-          </el-checkbox-group> -->
-          <el-checkbox-group v-model="settingForm.otc" v-if="(track.dataSourceIndex== 0 || track.dataSourceIndex== 1)">
-            <el-checkbox v-for="(item, index) in track.sub_huobi.otcRmb" v-bind:key="index" :label="item" name="type">{{item.toUpperCase().slice(0,-3)}}</el-checkbox>
-            <!-- <el-checkbox label="usdtrmb" name="type">USDT</el-checkbox>-->
+       
+          <el-checkbox-group v-model="settingForm.otc">
+            <el-checkbox v-for="(item, index) in track.sub_huobi.otcRmb" v-bind:key="index" :label="item" name="type">{{item.toUpperCase()}}</el-checkbox>
           </el-checkbox-group>
         </el-form-item>
 
-        <!-- <el-form-item label="显示实时价格">
-          <el-checkbox-group v-model="settingForm.realtimePrice" v-if="track.dataSourceIndex== 2">
-            <el-checkbox v-for="(item, index) in track.sub_ok.depthUsdt" v-bind:key="index" :label="item" name="type">{{item.toUpperCase().slice(0,-4)}}</el-checkbox>
-          </el-checkbox-group>
-          <el-checkbox-group v-model="settingForm.realtimePrice" v-if="(track.dataSourceIndex== 0 || track.dataSourceIndex== 1)">
-            <el-checkbox v-for="(item, index) in track.sub_ok.depthUsdt" v-bind:key="index" :label="item" name="type">{{item.toUpperCase().slice(0,-4)}}</el-checkbox>
-          </el-checkbox-group>
-        </el-form-item> -->
 
         <el-row>
             <el-col :span="10" style="margin-right:40px">
@@ -168,17 +157,11 @@
       title="挂单姓名匹配"
       :visible.sync="otcSettingVisible"
       width="50%">
-      <!-- <span>这是一段信息</span> -->
       <el-form ref="otcSettingForm" label-width="50px" label-position="left">
         <el-form-item label="名称">
           <el-input v-model.trim="otcSettingForm.name" placeholder="输入名称。多个名称以;隔开"></el-input>
         </el-form-item>
-        <!-- <el-form-item label="蓝色高亮">
-          <el-input v-model="otcSettingForm.blueName" placeholder="请输入要高亮显示的昵称"></el-input>
-        </el-form-item>
-        <el-form-item label="绿色高亮">
-          <el-input v-model="otcSettingForm.greenName" placeholder="请输入要高亮显示的昵称"></el-input>
-        </el-form-item> -->
+       
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="otcSettingVisible = false">取 消</el-button>
@@ -186,18 +169,6 @@
       </span>
     </el-dialog>
 
-    <!-- <div id="bottom" >
-      <div style="display: flex;flex-direction: row;justify-content: center; height:25px; align-items: center; font-weight:bold;"
-        v-for="(item, index) in setting.realtimePrice" v-bind:key="index">
-        <div :style=" ('color:' + (colorSelect ? style.greenColor : style.redColor) + ';' ) + 'margin-right: 20px;'">
-          卖二 {{ marketDepth[item]&&marketDepth[item].asks[1] ? marketDepth[item].asks[1].price : ""}} 卖一 {{ marketDepth[item]&&marketDepth[item].asks[0] ? marketDepth[item].asks[0].price : ""}}
-        </div>
-        <div :style="style.blackColor">{{item.toUpperCase()}}</div>
-        <div :style="  ('color:' + (colorSelect ? style.redColor : style.greenColor) + ';' ) + 'margin-left: 20px;'">
-          买一 {{ marketDepth[item]&&marketDepth[item].bids[0] ? marketDepth[item].bids[0].price : "" }} 买二 {{ marketDepth[item]&&marketDepth[item].bids[1] ? marketDepth[item].bids[1].price : ""}}
-        </div>
-      </div>
-    </div> -->
   </div>
 </template>
 
@@ -212,12 +183,14 @@ export default {
         blackColor: "#303133",
       },
       
+      exchange:"huobi",
+
       settingDialogVisible: false,
       otcSettingVisible: false,
 
       setting:{
         realtimePrice:[],//btcusdt,ltcusdt
-        otc:["usdtrmb"],//btcrmb,ltcrmb,usdtrmb
+        otc:["usdt"],//btc,ltc,usdt
         otcfee:0,
         coinfee:0,
         count:20,
@@ -261,7 +234,7 @@ export default {
       ]
     };
   },
-  computed: mapState(["track","otcDepth","marketDepth","usdtPrice", "marketTrade"]),
+  computed: mapState(["track","tradeFee", "otcDepth","usdtPrice", "marketTrade"]),
   directives: {
     drag(el){
       let oDiv = el; //当前元素
@@ -312,7 +285,7 @@ export default {
     },
     showSettingDialog: function(){
       this.settingDialogVisible = true
-      //this.settingForm.realtimePrice = this.setting.realtimePrice
+      
       this.settingForm.otc = this.setting.otc
       this.settingForm.fee = this.setting.fee
     },
@@ -324,16 +297,16 @@ export default {
       this.setting.realtimePrice  = []
       this.setting.colorSelect = this.settingForm.colorSelect
       for (var idx in this.settingForm.otc){
-          if (this.settingForm.otc[idx] == "usdtrmb"){
+          if (this.settingForm.otc[idx] == "usdt"){
             continue
           }
-          this.setting.realtimePrice.push(this.settingForm.otc[idx].slice(0,-3) + "usdt")
+          this.setting.realtimePrice.push(this.settingForm.otc[idx] + "usdt")
       }
       this.setting.otcfee = this.settingForm.otcfee
       this.setting.coinfee = this.settingForm.coinfee
-      this.track.tradeFee.otcFee = this.settingForm.otcfee
-      this.track.tradeFee.coinFee = this.settingForm.coinfee
-      this.track.tradeFee.userType = this.settingForm.userType
+      this.tradeFee[exchange].otcFee = this.settingForm.otcfee
+      this.tradeFee[exchange].coinFee = this.settingForm.coinfee
+      this.tradeFee[exchange].userType = this.settingForm.userType
 
       //this.setting.realtimePrice = this.settingForm.realtimePrice
 
