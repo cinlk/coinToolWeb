@@ -203,6 +203,7 @@ export default new Vuex.Store({
             //      console.log(error);
             //   });
             // }
+            
             let computeProfix = function(exchange, coinName){
 
 
@@ -227,13 +228,17 @@ export default new Vuex.Store({
                                             var sellPrice = 0
                                             // otc 市场的usdt 广告商的费率为0，散户也为0
                                             if (state.tradeFee[exchange].userType == 1 ){
+                                                
                                                 costPrice =  state.usdtPrice[exchange].buy * tradePrice  * (1+state.tradeFee[exchange].coinFee)
                                                 sellPrice =  element.price*(1-state.tradeFee[exchange].otcFee)
+
                                             }else{
+                                                
                                                 costPrice = element.price*(1+state.tradeFee[exchange].otcFee)
                                                 sellPrice = state.usdtPrice[exchange].sell * tradePrice * (1 - state.tradeFee[exchange].coinFee)
+
                                             }
-                                  
+                                            
                                             let profix = sellPrice - costPrice
 
                                             if (spotCoinName == "btcusdt" || spotCoinName == "ethusdt"){

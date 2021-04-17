@@ -24,7 +24,7 @@
                 <el-scrollbar  style="height: 100%; color:#fff" :native="false" wrapStyle=""  wrapClass="" viewClass="" viewStyle="" :noresize="false" tag="section"
                 >
 
-                 <el-menu :unique-opened="true"  router="true"
+                 <el-menu :unique-opened="true"  :router="true"
                       theme="dark"
                       :default-active="menuIndex.path"
                       class="menu"

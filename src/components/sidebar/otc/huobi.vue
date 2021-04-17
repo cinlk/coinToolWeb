@@ -52,7 +52,7 @@
 
               <el-table-column :label="item.toUpperCase()  +' 购买广告' + (setting.userType === 1 ? '(散户卖出)':'')  " align="center"  >
                 <el-table-column prop="price" label="价格" show-overflow-tooltip  :width="columnWidth(item)"   > </el-table-column>
-                <el-table-column prop="profix" label="利润" v-if="item !=='usdtrmb'" show-overflow-tooltip width="70"> </el-table-column>
+                <el-table-column prop="profix" label="利润" v-if="item !=='usdt'" show-overflow-tooltip width="70"> </el-table-column>
                 <el-table-column prop="size" label="数量" show-overflow-tooltip width="80"> </el-table-column>
                 <el-table-column prop="name" label="昵称" show-overflow-tooltip  align="left"  width="100"> </el-table-column>
               </el-table-column>
@@ -69,7 +69,7 @@
             >
               <el-table-column :label="item.toUpperCase() + ' 出售广告' +  (setting.userType == 1 ? '(散户买入)':'') " align="center">
                 <el-table-column prop="price" label="价格" show-overflow-tooltip :width="columnWidth(item)"> </el-table-column>
-                <el-table-column prop="profix" label="利润" v-if="item !=='usdtrmb'" show-overflow-tooltip width="70"></el-table-column>
+                <el-table-column prop="profix" label="利润" v-if="item !=='usdt'" show-overflow-tooltip width="70"></el-table-column>
                 <el-table-column prop="size" label="数量" show-overflow-tooltip width="80"> </el-table-column>
                 <el-table-column prop="name" label="昵称" show-overflow-tooltip align="left"  width="100"> </el-table-column>
               </el-table-column>
@@ -304,9 +304,9 @@ export default {
       }
       this.setting.otcfee = this.settingForm.otcfee
       this.setting.coinfee = this.settingForm.coinfee
-      this.tradeFee[exchange].otcFee = this.settingForm.otcfee
-      this.tradeFee[exchange].coinFee = this.settingForm.coinfee
-      this.tradeFee[exchange].userType = this.settingForm.userType
+      this.tradeFee[this.exchange].otcFee = this.settingForm.otcfee
+      this.tradeFee[this.exchange].coinFee = this.settingForm.coinfee
+      this.tradeFee[this.exchange].userType = this.settingForm.userType
 
       //this.setting.realtimePrice = this.settingForm.realtimePrice
 
@@ -367,9 +367,9 @@ export default {
             
             
         }
-        if (item == 'usdtrmb'){
+        if (item == 'usdt'){
             return style
-        }else if (item == "htrmb" || item == "eosrmb"){
+        }else if (item == "ht" || item == "eos"){
           style.maxWidth = "310px"
         }else{
           style.maxWidth = "330px"
@@ -445,9 +445,9 @@ export default {
     },
 
     columnWidth: function (item) {
-        if (item == 'usdtrmb'){
+        if (item == 'usdt'){
             return 50
-        }else if ( item == "htrmb" || item == "eosrmb"){
+        }else if ( item == "ht" || item == "eos"){
           return 60
         }
         return 80
