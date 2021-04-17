@@ -87,19 +87,19 @@ export default new Vuex.Store({
             if(state.track.dataSourceIndex == 0 || state.track.dataSourceIndex == 1){//火币
                 state.track.sub_huobi.otcRmb.forEach(element => {
                     subs.push({
-                        sub: "market."+element+".depth.20",
+                        sub: "market.otc."+element,
                         exchange: "huobi",
                     })
                 })
                 state.track.sub_huobi.depthUsdt.forEach(element => {
                     subs.push({
-                        sub: "market."+element+".depth.step0",
+                        sub: "market.spot.depth."+element,
                         exchange: "huobi",
                     })
                 })
                 state.track.sub_huobi.TradeUsdt.forEach(element => {
                     subs.push({
-                        sub: "market."+element+".trade",
+                        sub: "market.spot.ticker."+element,
                         exchange: "huobi",
                     })
                 })
@@ -109,13 +109,13 @@ export default new Vuex.Store({
             } else if(state.track.dataSourceIndex == 2 ){//ok
                 state.track.sub_ok.otcRmb.forEach(element => {
                     subs.push({
-                        sub: "market."+element+".depth.20",
+                        sub: "market.otc."+element,
                         exchange: "okex",
                     })
                 })
                 state.track.sub_ok.depthUsdt.forEach(element => {
                     subs.push({
-                        sub: "market."+element+".depth.step0",
+                        sub: "market.spot.ticker."+element,
                         exchange: "okex",
                     })
                 })

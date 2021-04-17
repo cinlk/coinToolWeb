@@ -145,7 +145,7 @@
               style="display: block; height:100%; line-height: 100%;"
               v-model="settingForm.colorSelect">
             </el-switch>
-            <div style="font-weight: bold; margin-left: 14px;">{{setting.colorSelect? "红涨绿跌" : "绿涨红跌"}}</div>
+            <div style="font-weight: bold; margin-left: 14px;">{{settingForm.colorSelect? "红涨绿跌" : "绿涨红跌"}}</div>
           </div>
         </el-form-item>
         <!-- <el-form-item label="手续费" >
