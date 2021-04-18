@@ -34,7 +34,7 @@
               size="mini"
               
               border
-              :data="otcDepth[exchange][item] ? otcDepth[exchange][item].bids.slice(0, setting.count) : []"
+              :data="otcDepth[exchange][item].bids ? otcDepth[exchange][item].bids.slice(0, setting.count) : []"
               :row-class-name="otcRowClassName"
               :cell-style="otcCellStyle"
               :header-cell-style="otcHeaderCellStyleBuy"
@@ -62,7 +62,7 @@
               size="mini"
               :style="maxWidhStyle(item)"
               border
-              :data="otcDepth[exchange][item] ? otcDepth[exchange][item].asks.slice(0, setting.count) : []"
+              :data="otcDepth[exchange][item].asks ? otcDepth[exchange][item].asks.slice(0, setting.count) : []"
               :row-class-name="otcRowClassName"
               :cell-style="otcCellStyle"
               :header-cell-style="otcHeaderCellStyleSell"
