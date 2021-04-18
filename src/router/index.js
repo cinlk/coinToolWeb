@@ -7,6 +7,7 @@ import Home from '@/components/home'
 import Index from '@/components/sidebar/index'
 import Huobi from '@/components/sidebar/otc/huobi'
 import Okex from '@/components/sidebar/otc/okex'
+import Binance from '@/components/sidebar/otc/binance'
 
 
 Vue.use(Router)
@@ -54,6 +55,12 @@ export default new Router({
           meta: { keepAlive: true}
 
         },
+        {
+          path: '/binance',
+          name: 'binance',
+          component: Binance,
+          meta: { keepAlive: true}
+        }
 
       ]
     }

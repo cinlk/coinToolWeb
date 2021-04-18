@@ -34,6 +34,10 @@ export default new Vuex.Store({
             sub_okex:{//基于ok的数据订阅
                 otcRmb:["usdt","btc","eth","okb"],
                 TradeUsdt:["btcusdt","ethusdt","okbusdt"]
+            },
+            sub_binance: {
+                otcRmb:["usdt","btc","eth","bnb"],
+                TradeUsdt:["btcusdt","ethusdt","bnbusdt"]
             }
         },
         socket: {
@@ -51,6 +55,9 @@ export default new Vuex.Store({
             },
             "okex":{
 
+            },
+            "binance":{
+
             }
             
         },
@@ -64,6 +71,12 @@ export default new Vuex.Store({
                 },
             },
             "okex":{
+                "usdt":{
+                    bids:[],
+                    asks:[],
+                },
+            },
+            "binance":{
                 "usdt":{
                     bids:[],
                     asks:[],
@@ -87,6 +100,9 @@ export default new Vuex.Store({
             },
             "okex":{
                 "btcusdt":{}
+            },
+            "binance":{
+                "btcusdt":{}
             }
                
         },
@@ -96,6 +112,10 @@ export default new Vuex.Store({
                 sell:1,
             },
             "okex":{
+                buy:10,
+                sell:1,
+            },
+            "binance":{
                 buy:10,
                 sell:1,
             }
@@ -137,6 +157,7 @@ export default new Vuex.Store({
 
 
             // } else if(state.track.dataSourceIndex == 1 ){//ok
+            // okex
                 state.track.sub_okex.otcRmb.forEach(element => {
                     subs.push({
                         sub: "market.otc."+element,
@@ -149,6 +170,23 @@ export default new Vuex.Store({
                         exchange: "okex",
                     })
                 })
+
+                // binance
+                state.track.sub_binance.otcRmb.forEach(element => {
+                    subs.push({
+                        sub: "market.otc."+element,
+                        exchange: "binance",
+                    })
+                })
+
+                state.track.sub_binance.TradeUsdt.forEach(element => {
+                    subs.push({
+                        sub: "market.spot.ticker."+element,
+                        exchange: "binance",
+                    })
+                })
+
+                
             // }
             let i = 0
             let interval = setInterval(()=>{
@@ -331,6 +369,73 @@ export default new Vuex.Store({
 
                         
                         break;
+
+                    case "binance":
+                             // 购买广告利润
+                        if (state.otcDepth[exchange][otcCoinName] && state.otcDepth[exchange][otcCoinName].bids && 
+                            state.marketTrade[exchange][spotCoinName] && state.marketTrade[exchange][spotCoinName].price){
+                                 
+                                state.otcDepth[exchange][otcCoinName].bids.forEach(element => {
+                                    if(element.price){
+
+                                        var tradePrice = state.marketTrade[exchange][spotCoinName].price
+                                        var costPrice = 0 
+                                        var sellPrice = 0
+                                        // otc 市场的usdt 广告商的费率为0，散户也为0
+                                        if (state.tradeFee[exchange].userType == 1 ){
+                                            
+                                            costPrice =  state.usdtPrice[exchange].buy * tradePrice  * (1+state.tradeFee[exchange].coinFee)
+                                            sellPrice =  element.price*(1-state.tradeFee[exchange].otcFee)
+
+                                        }else{
+                                            
+                                            costPrice = element.price*(1+state.tradeFee[exchange].otcFee)
+                                            sellPrice = state.usdtPrice[exchange].sell * tradePrice * (1 - state.tradeFee[exchange].coinFee)
+
+                                        }
+                                        
+                                        let profix = sellPrice - costPrice
+
+                                        if (spotCoinName == "btcusdt" || spotCoinName == "ethusdt"){
+                                            element.profix = profix.toFixed(1)
+                                        }else{
+                                            element.profix = profix.toFixed(2)
+                                        }
+
+                                    }
+                             })
+                            }   
+                            
+                        
+                        // 出售广告利润计算
+                        if (state.otcDepth[exchange][otcCoinName] && state.otcDepth[exchange][otcCoinName].asks && 
+                            state.marketTrade[exchange][spotCoinName] && state.marketTrade[exchange][spotCoinName].price){
+                                state.otcDepth[exchange][otcCoinName].asks.forEach(element => {
+                                    if (element.price){
+                                        var tradePrice = state.marketTrade[exchange][spotCoinName].price
+                                        // otc 市场的usdt 广告商的费率为0，散户也为0
+                                        var costPrice = 0 
+                                        var sellPrice = 0 
+                                        if (state.tradeFee[exchange].userType == 1){
+                                            costPrice = element.price * (1 + state.tradeFee[exchange].otcFee)
+                                            sellPrice =  tradePrice * state.usdtPrice[exchange].sell*(1 - state.tradeFee[exchange].coinFee)
+                                        }else{
+                                            sellPrice = element.price *(1-state.tradeFee[exchange].otcFee)
+                                            costPrice = tradePrice * state.usdtPrice[exchange].buy*(1 + state.tradeFee[exchange].coinFee) 
+                                        }
+                                        
+                                        let profix = sellPrice - costPrice  
+
+                                        if (spotCoinName == "btcusdt" || spotCoinName == "ethusdt"){
+                                            element.profix = profix.toFixed(1)
+                                        }else{
+                                            element.profix = profix.toFixed(2)
+                                        }
+                                    }
+                                })
+                            }
+
+                        break;
                     default:
                         break;
                 }                             
@@ -339,7 +444,7 @@ export default new Vuex.Store({
 
             if(ch.length > 2 && ch[1].match(/otc$/g)){
 
-                if (exchange == "huobi" || exchange == "okex"){
+                if (exchange == "huobi" || exchange == "okex" || exchange == "binance"){
                     
                     state.otcDepth[exchange][ch[2]] = message.data 
                     if (ch[2] == "usdt"){
@@ -363,7 +468,7 @@ export default new Vuex.Store({
                 // computeProfix();
             }
             else if(ch.length > 2 && ch[2].match(/^ticker$/g)){
-                if (exchange == "huobi" || exchange == "okex"){
+                if (exchange == "huobi" || exchange == "okex" || exchange == "binance"){
                     state.marketTrade[exchange][ch[3]] = message.data
                     computeProfix(exchange, ch[3]);
                 }

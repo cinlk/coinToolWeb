@@ -114,6 +114,10 @@ export default{
                           path: "okex",
                           name: "okex",
                         },
+                        {
+                          path: "binance",
+                          name: "binance",
+                        }
                       ],
                 },
                 {
