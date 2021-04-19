@@ -205,7 +205,6 @@ export default {
       coinFees:[
           {value: 0, label: 0},
           {value: 0.001, label: 0.001},
-          {value: 0.00095, label: 0.00095},
           {value: 0.0009, label: 0.0009},
           {value: 0.0008, label: 0.0008},
           {value: 0.0007, label: 0.0007},
