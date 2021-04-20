@@ -1,7 +1,7 @@
 <template>
     <div class="container">
 
-      <div class="header">当前为多</div>  
+      <div class="header">新币榜单</div>  
       <div class="table">
           <!-- <div> -->
           <!-- <el-input v-model="tableDataName" placeholder="请输入姓名" style="width:240px"></el-input> -->
@@ -14,7 +14,7 @@
                 :data="tableDataEnd"
                 border
                 stripe
-                :cell-style="{textAlign:'center', height:'60px',fontSize:'16px'}"
+                :cell-style="{textAlign:'center', height:'60px',fontSize:'15px',lineHeight:'15px'}"
                 :header-cell-style="{textAlign:'center', color:'black'}"
                 colu>
                 <el-table-column
@@ -34,7 +34,7 @@
                 </el-table-column>
                 <el-table-column label="操作">
                     <template slot-scope="scope">
-                        <el-button type="primary" style="height:40px" @click="showCoin(scope.row.coinId)">查看</el-button>
+                        <el-button type="primary" @click="showCoin(scope.row.coinId)">查看</el-button>
 
                    </template>
                 </el-table-column>
@@ -209,6 +209,7 @@
 </script>
 
 
+
 <style scoped>
 
    .container {
@@ -217,6 +218,8 @@
    .header {
        margin-top: 50px;
        text-align: center;
+       font-size: 30px;
+       font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
    }
    .table {
        display: flex;
@@ -225,6 +228,8 @@
        width: 100%;
        justify-items: center;
        align-items: center;
+       height: 100%;
+       
    }
    .wrap_table{
        width: 70%;
@@ -235,7 +240,7 @@
        width: 70%;
        margin-top: 30px;
    }
-
+ 
 
 
 </style>

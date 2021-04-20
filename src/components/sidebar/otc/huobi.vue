@@ -467,9 +467,9 @@ export default {
     
   },
 };
-</script>
+</script >
 
-<style >
+<style  scoped>
 body{
   box-sizing: border-box;
 }

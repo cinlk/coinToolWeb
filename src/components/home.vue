@@ -122,12 +122,12 @@ export default{
                 },
                 {
                   path: "coin",
-                  name: "币信息",
+                  name: "数字币数据",
                   order: "3",
                   children: [
                     {
                       path: "newcoin",
-                      name: "新币帮",
+                      name: "新币榜单",
                     }
                   ],
                 },
