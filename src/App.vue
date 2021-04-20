@@ -10,7 +10,7 @@
 
 <script>
 export default {
-  name: 'App'
+  name: 'App',
 }
 </script>
 
@@ -28,4 +28,5 @@ body{
 #app {
   height: 100%;
 }
+
 </style>

@@ -10,7 +10,7 @@ import Okex from '@/components/sidebar/otc/okex'
 import Binance from '@/components/sidebar/otc/binance'
 
 import Coins from '@/components/sidebar/coins/newCoins'
-
+import CoinDetail from '@/components/sidebar/coins/coinDetail'
 
 Vue.use(Router)
 
@@ -70,14 +70,22 @@ export default new Router({
       path: '/coin',
       name: 'coin',
       component: Home,
+      redirect: '/newcoin',
       children: [
         {
           path: '/newcoin',
           name: 'newcoin',
           component: Coins,
           meta: { keepAlive: true}
-        }
+        },
+       
       ]
+    },
+
+    {
+      path: '/coinDetail/:coinId',
+      name: 'coinDetail',
+      component: CoinDetail,
     }
   ]
 })
