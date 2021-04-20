@@ -121,13 +121,13 @@ export default{
                       ],
                 },
                 {
-                  path: "orderinfomange",
-                  name: "订单信息管理",
+                  path: "coin",
+                  name: "币信息",
                   order: "3",
                   children: [
                     {
-                      path: "orderinfomange",
-                      name: "订单信息",
+                      path: "newcoin",
+                      name: "新币帮",
                     }
                   ],
                 },

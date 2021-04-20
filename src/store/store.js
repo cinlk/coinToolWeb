@@ -2,8 +2,6 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 
 
-import axios from 'axios';
-
 import {
     SOCKET_ONOPEN,
     SOCKET_ONCLOSE,
@@ -69,15 +67,27 @@ export default new Vuex.Store({
                     bids:[],
                     asks:[],
                 },
+                "btc":{
+                    bids:[],
+                    asks:[],
+                },
             },
             "okex":{
                 "usdt":{
                     bids:[],
                     asks:[],
                 },
+                "btc":{
+                    bids:[],
+                    asks:[],
+                },
             },
             "binance":{
                 "usdt":{
+                    bids:[],
+                    asks:[],
+                },
+                "btc":{
                     bids:[],
                     asks:[],
                 },
@@ -88,8 +98,7 @@ export default new Vuex.Store({
             "huobi":{
                 "btcusdt":{
                     bids:[], //对应的是行情里面的买一买二...
-                    asks:[], //对应的是行情里面的卖一卖二...
-                    
+                    asks:[], //对应的是行情里面的卖一卖二...      
                 }
             }
             

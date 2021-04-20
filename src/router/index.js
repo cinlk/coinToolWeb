@@ -9,6 +9,8 @@ import Huobi from '@/components/sidebar/otc/huobi'
 import Okex from '@/components/sidebar/otc/okex'
 import Binance from '@/components/sidebar/otc/binance'
 
+import Coins from '@/components/sidebar/coins/newCoins'
+
 
 Vue.use(Router)
 
@@ -62,6 +64,19 @@ export default new Router({
           meta: { keepAlive: true}
         }
 
+      ]
+    },
+    {
+      path: '/coin',
+      name: 'coin',
+      component: Home,
+      children: [
+        {
+          path: '/newcoin',
+          name: 'newcoin',
+          component: Coins,
+          meta: { keepAlive: true}
+        }
       ]
     }
   ]
