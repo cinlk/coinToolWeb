@@ -14,7 +14,7 @@
                 :data="tableDataEnd"
                 border
                 stripe
-                :cell-style="{textAlign:'center'}"
+                :cell-style="{textAlign:'center', height:'60px',fontSize:'16px'}"
                 :header-cell-style="{textAlign:'center', color:'black'}"
                 colu>
                 <el-table-column
@@ -34,7 +34,7 @@
                 </el-table-column>
                 <el-table-column label="操作">
                     <template slot-scope="scope">
-                        <el-button type="primary" @click="showCoin(scope.row.coinId)">查看</el-button>
+                        <el-button type="primary" style="height:40px" @click="showCoin(scope.row.coinId)">查看</el-button>
 
                    </template>
                 </el-table-column>
