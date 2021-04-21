@@ -129,28 +129,21 @@ export default {
         getCoinById(id){
               
               var _this = this;
-              //_this.loading = true;
               this.$axios.post(
                 "http://103.118.42.205:7001/api/v1/newcoins/info",
                 {        
                   coinId: parseInt(id)
                 }).then(function (res) {
                     
-                    //_this.loading = false
                     if (res.data.code == 200){
-                        //   _this.tableDataEnd = res.data.data.items
-                        //   _this.totalItems = res.data.data.totalCounts
-                         console.log(res.data.data)
+                       
                          _this.formData = res.data.data
                          _this.showContent = true
                        }
                    
-
-                   
                 }).catch(function (res) {
                     alert(res)
-                    //console.log(res)
-                    //_this.loading = false
+                    
                 })
         },
         toNewSite(){

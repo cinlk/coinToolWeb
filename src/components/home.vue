@@ -19,7 +19,7 @@
         <el-container>
             <el-aside class="sidebar" :width="isCollapse? '64px':'180px'">
 
-                <div class="toggle-button" @click="toggleCollapse">|||</div>
+                <div class="toggle-button" @click="toggleCollapse"><i v-bind:class=" isCollapse ? 'el-icon-s-unfold':'el-icon-s-fold' "></i></div>
 
                 <el-scrollbar  style="height: 100%; color:#fff" :native="false" wrapStyle=""  wrapClass="" viewClass="" viewStyle="" :noresize="false" tag="section"
                 >
@@ -45,7 +45,7 @@
 
                  <el-submenu  :index="' '+item1.order" v-for="(item1,index) in menuData" :key="item1.path">
                            <template  slot="title" @click="clickTitle">
-                               <i class="el-icon-location"></i>
+                               <i class="el-icon-menu"></i>
                                <span>{{item1.name}}</span>
                            </template>
                            
@@ -59,7 +59,7 @@
                            
                            >
 
-                               <i class="el-icon-location"></i>
+                               <i class="el-icon-star-on"></i>
                                <span>{{item2.name}}</span>
                            </el-menu-item>
 
@@ -88,6 +88,7 @@ export default{
 
     data() {
         return {
+            
             isCollapse: false,
             style: {
                 display: "block",
@@ -238,7 +239,7 @@ export default{
 
 .toggle-button {
     background-color: #4a5064;
-    font-size: 10px;
+    font-size: 20px;
     line-height: 24px;
     color: #fff;
     text-align: center;
