@@ -93,7 +93,7 @@
               var _this = this;
               _this.loading = true;
               this.$axios.post(
-                "http://103.118.42.205:7001/api/v1/newcoins/list",
+                "newcoins/list",
                 {
                   page: _this.currentPage,
                   limit: _this.pageSize,
@@ -101,7 +101,7 @@
                 }).then(function (res) {
                     
                     _this.loading = false
-                    if (res.data.code == 200){
+                    if (res && res.data.code == 200){
                           _this.tableDataEnd = res.data.data.items
                           _this.totalItems = res.data.data.totalCounts
                        }

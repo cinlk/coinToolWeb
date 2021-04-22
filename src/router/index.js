@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import HelloWorld from '@/components/HelloWorld'
 
 import Login from '@/components/login'
+import Registry from '@/components/registry'
 import Home from '@/components/home'
 import Index from '@/components/sidebar/index'
 import Huobi from '@/components/sidebar/otc/huobi'
@@ -28,6 +29,12 @@ export default new Router({
         }
       ]
 
+    },
+    {
+      path: '/registry',
+      name: 'registry',
+      component: Registry,
+      
     },
     {
       path: '/home',

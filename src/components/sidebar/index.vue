@@ -62,9 +62,9 @@ export default {
         getIndexInfo(){
 
               var _this = this;
-              this.$axios.get("http://103.118.42.205:7001/api/v1/index").then(function (res) {
+              this.$axios.get("index").then(function (res) {
                     
-              if (res.data.code == 200){
+              if (res && res.data.code == 200){
                        
                    _this.indexInfo = res.data.data
                    _this.showContent = true

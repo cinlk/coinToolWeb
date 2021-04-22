@@ -21,7 +21,7 @@ export default new Vuex.Store({
             //show_guadan:true,//是否显示买卖一价挂单的利润
             dataSourceIndex: 0, // 由下面的dataSource的索引来区分
             dataSource:[
-                'ws://103.118.42.205:7001/ws', //火币后端，lk的
+                'ws://localhost:7002/ws', //火币后端，lk的
             ],
            
             sub_huobi:{//基于火币网的数据订阅
@@ -129,7 +129,11 @@ export default new Vuex.Store({
                 sell:1,
             }
            
-        }
+        },
+
+        // token
+        isLogin:'0',
+        token: localStorage.getItem('token') ? localStorage.getItem('token') : '',
     },
     mutations: {
         // changeUsdtPrice(state,paylaod){
@@ -221,7 +225,11 @@ export default new Vuex.Store({
         [SOCKET_ONMESSAGE](state, event) {
             
             // state.socket.message = event
-            
+            console.log("on message", event.data)
+            if (event.data == "unathorization"){
+                // 关闭连接 TODO
+                 
+            }
             let message = {}
             try{
                 message = JSON.parse(event.data)
@@ -494,6 +502,19 @@ export default new Vuex.Store({
             console.log("socket reconnect error", state)
             state.socket.reconnectError = true;
         },
+
+
+        $_setToken(state, value) { // 设置存储token
+	        state.token = value;
+            state.isLogin = '1';
+	        localStorage.setItem('token', value);
+	    },
+	    $_removeStorage(state, value){  // 删除token
+              state.isLogin = '0';
+		      localStorage.removeItem('token');
+	    },
+
+
     },
     actions: {
         sendMessage: function (context, message) {
@@ -506,5 +527,14 @@ export default new Vuex.Store({
             }
         }
        
+    },
+
+    getters: {
+        getStorage(state){
+            if(!state.token){
+                state.token =JSON.parse(localStorage.getItem("token"))
+            }
+            return state.token
+        }
     }
 })

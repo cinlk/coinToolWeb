@@ -129,13 +129,12 @@ export default {
         getCoinById(id){
               
               var _this = this;
-              this.$axios.post(
-                "http://103.118.42.205:7001/api/v1/newcoins/info",
+              this.$axios.post("newcoins/info",
                 {        
                   coinId: parseInt(id)
                 }).then(function (res) {
                     
-                    if (res.data.code == 200){
+                    if (res && res.data.code == 200){
                        
                          _this.formData = res.data.data
                          _this.showContent = true
