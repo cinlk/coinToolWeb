@@ -230,7 +230,7 @@ export default new Vuex.Store({
                 return
             }
            
-
+            // 只处理了  otc数据  TODO
             const ch = message.ch.split(".")
             const exchange = message.exchange 
             

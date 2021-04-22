@@ -1,5 +1,5 @@
 <template>
-    <div class="main">
+    <div class="main" v-if="showContent">
 
         <div class="introduce">
                 <h2 style="margin-top:10px;font-size:26px;font-weight:100;color:#676a6c;font-family:open sans,Helvetica Neue,Helvetica,Arial,sans-serif">{{indexInfo.subtitle}}</h2>
@@ -43,7 +43,7 @@ export default {
 
     data() {
         return {
-            showContent: false,
+             showContent: false,
              indexInfo:{
                  subtitle:"",
                  description:"",
@@ -73,7 +73,7 @@ export default {
                    
                 }).catch(function (res) {
                     alert(res)
-                    
+                   
                 })
         }
     }
