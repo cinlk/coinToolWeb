@@ -134,6 +134,7 @@ export default new Vuex.Store({
         // token
         isLogin:'0',
         token: localStorage.getItem('token') ? localStorage.getItem('token') : '',
+        userInfo: {} || JSON.parse(localStorage.getItem("userInfo"))
     },
     mutations: {
         // changeUsdtPrice(state,paylaod){
@@ -514,6 +515,11 @@ export default new Vuex.Store({
 		      localStorage.removeItem('token');
 	    },
 
+        SaveLoginDatafunction(state, data) {
+            //state.userInfo = data
+            localStorage.setItem("userInfo", JSON.stringify(data))
+        }
+
 
     },
     actions: {
@@ -526,6 +532,7 @@ export default new Vuex.Store({
                 Vue.prototype.$socket.send(message)
             }
         }
+        
        
     },
 
@@ -535,6 +542,8 @@ export default new Vuex.Store({
                 state.token =JSON.parse(localStorage.getItem("token"))
             }
             return state.token
-        }
+        },
+        userInfo: (state) => state.userInfo
+        
     }
 })

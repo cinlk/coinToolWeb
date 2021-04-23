@@ -121,6 +121,8 @@
                 }).then(function (res) {
                    if (res && res.data.code == 200){
                         let info = res.data.data
+                        console.log(res.data)
+                        _this.$store.commit('SaveLoginDatafunction', res.data.data)
                         _this.$store.commit('$_setToken', info.token)
                         _this.$router.push({path: '/home'})
                    }else{

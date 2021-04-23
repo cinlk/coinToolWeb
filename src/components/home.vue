@@ -7,13 +7,23 @@
                           <img src="../assets/top.png" alt="无法显示图片" style="width:400px;height: 30px" />
                       </div>
                   </el-col>
-                  <el-col :span="8" class="userInfo">
+                  <el-col :span="8" class="userInfo" id="aaa">
                        <div class="grid-content bg-purple-light">
-                           <span class="el-dropdown-link userinfo-inner">欢迎你</span>
-                           <span class="userinfo-inner" @click="signout">退出</span>
+                           <span class="el-dropdown-link userinfo-inner">欢迎你   {{userInfo.phone}}</span>
+                            
                        </div>
+                        
+                       <div class="avatar-wrapper el-dropdown-selfdefine" role="button">
+                              <img    src="../assets/avatar.png" @click="personal" class="avatar"/>
+                              <i    class="el-icon-caret-bottom"></i>
+                         </div> 
+
                   </el-col>
               </el-row>
+
+
+      
+
 
         </el-header>
         <el-container>
@@ -78,17 +88,36 @@
                
             </el-main>     
         </el-container>
+
+      <ul v-if="UserDropMenuVisible" class="el-dropdown-menu el-popper el-dropdown-menu--medium" 
+      :style="{zIndex: 2050, position: 'absolute', top: '40px', width:'90px', left: `${searchWidth}px`}"
+      
+      >
+          <div   @click="toPerson" aria-current="page"><li tabindex="-1" class="el-dropdown-menu__item">个人中心</li></div>
+          <li tabindex="-1" class="el-dropdown-menu__item" @click="signout"> <span>退出登录</span></li>
+      </ul>
+
+
     </el-container>
+
+
+
+
+		
+
+
 </template>
 
 <script>
-
 export default{
     name: "Home",
 
     data() {
         return {
-            
+
+            userInfo:{},
+            searchWidth:800,
+            UserDropMenuVisible:false,
             isCollapse: false,
             style: {
                 display: "block",
@@ -150,13 +179,67 @@ export default{
             ]
         }
     },
+    // computed:{
+    //   screenWidth: function () {
+    //     //console.log(document.body.clientWidth)
+    //     return (document.body.clientWidth - 600) +'px';
+    //   }
+    // },
+    mounted(){
+      this.searchFormWidth(); // 组件初始化的时候不会触发onresize事件，这里强制执行一次
+	    window.onresize = () => {
+	      if(!this.timer){ // 使用节流机制，降低函数被触发的频率
+	        this.timer = true;
+	        let that = this; // 匿名函数的执行环境具有全局性，为防止this丢失这里用that变量保存一下
+	        setTimeout(function(){
+	          that.searchFormWidth();
+	          that.timer = false;
+	        },400)
+	      }
+	    }
+   },
 
-    computed: {
-       
-    },
+   destroyed(){
+     
+     window.onresize = null;
+   },
+
+   created(){
+     this.loadUserInfo();
+   },
+
+
+
+
+    // computed: mapState(["userInfo"]),
 
     methods: {
+
+      loadUserInfo(){
+        var info = JSON.parse(localStorage.getItem("userInfo") || '{}')
+        this.userInfo = info;
+      },
+      searchFormWidth() {
+	      let w = window.innerWidth;
+        //console.log(w)
+        var dom1 = document.querySelector('#aaa')
+	      if (w > 1314){
+          this.searchWidth = w + 250 -  parseInt(getComputedStyle(document.getElementById('aaa'),null).getPropertyValue('width').split(".")[0])
+
+        }
+        else if (w > 1000){
+          this.searchWidth = w + 200 -  parseInt(getComputedStyle(document.getElementById('aaa'),null).getPropertyValue('width').split(".")[0])
+
+        }else {
+          this.searchWidth = w + 100 -  parseInt(getComputedStyle(document.getElementById('aaa'),null).getPropertyValue('width').split(".")[0])
+
+        }
+	      
+	    },
+ 
         signout() {
+
+            this.UserDropMenuVisible = !this.UserDropMenuVisible
             var _this = this;
             this.$confirm("退出登录, 是否继续?", "提示", {
             confirmButtonText: "确定",
@@ -175,13 +258,27 @@ export default{
         },
 
         clickMenuItem() {
-          console.log("....");
+          
           this.style.display = "none";
         },
 
         toggleCollapse() {
             this.isCollapse = !this.isCollapse
+        },
+        personal(){
+          //console.log(screenWidth)
+          //console.log("personal")
+          this.UserDropMenuVisible = !this.UserDropMenuVisible
+        },
+
+        toPerson(){
+          this.UserDropMenuVisible = !this.UserDropMenuVisible
+          if (this.$route.name != "person"){
+            this.$router.push({path: 'person'})
+          }
         }
+       
+
 
 
     }
@@ -218,14 +315,26 @@ export default{
 
 
 
+.avatar-wrapper{
+  align-items: center;
+  width: auto;
+  height: auto;
+  cursor: pointer;
+}
 .headerLogo {
   line-height: 40px;
   margin-top: 5px;
 }
 
 .userInfo {
+  margin-top: 2px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  
   line-height: 40px;
   text-align: center;
+  
 }
 
 
@@ -248,7 +357,28 @@ export default{
     text-align: center;
     letter-spacing: 0.2em;
     cursor: pointer;
+    
 }
+
+.avatar{
+
+    margin-left: 20px;
+    width: 35px;
+    height:35px;
+    border-radius:50%;
+    /* background: url("../assets/avatar.png") no-repeat; */
+    border-style: none;
+    /* border: 1px solid #d5d5d5; */
+}
+
+a {
+  text-decoration: none;
+}
+ 
+.router-link-active {
+  text-decoration: none;
+}
+
 
 
 </style>

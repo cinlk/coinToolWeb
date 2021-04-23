@@ -13,6 +13,8 @@ import Binance from '@/components/sidebar/otc/binance'
 import Coins from '@/components/sidebar/coins/newCoins'
 import CoinDetail from '@/components/sidebar/coins/coinDetail'
 
+import Person from '@/components/sidebar/person/person'
+
 Vue.use(Router)
 
 export default new Router({
@@ -69,6 +71,13 @@ export default new Router({
           name: 'binance',
           component: Binance,
           meta: { keepAlive: true}
+        },
+        {
+          path: '/person',
+          name: 'person',
+          component: Person,
+          meta: { keepAlive: true}
+    
         }
 
       ]
@@ -93,6 +102,7 @@ export default new Router({
       path: '/coinDetail/:coinId',
       name: 'coinDetail',
       component: CoinDetail,
-    }
+    },
+    
   ]
 })
