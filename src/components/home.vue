@@ -115,6 +115,7 @@ export default{
     data() {
         return {
 
+            timer:null,
             userInfo:{},
             searchWidth:800,
             UserDropMenuVisible:false,
@@ -204,8 +205,32 @@ export default{
      window.onresize = null;
    },
 
+  //  beforeRouteLeave(to, from, next){
+  //    clearInterval(this.timer);
+  
+  //    this.timer = null;
+  //    next()
+  //  },
+
    created(){
      this.loadUserInfo();
+   },
+   activated(){
+        var _this = this;
+        // 在destroy不会被触发，切换界面会一直执行. 放在这里
+        // 默认在index 界面不会触发，切换到其它界面会触发
+        if(this.timer == null){
+            this.timer =  setInterval(() => {
+                    // 检查token
+                    _this.$axios.get("token/check")
+                    console.log("home ticker")
+                }, 5000);
+        }
+   },
+
+   deactivated(){
+      clearInterval(this.timer)
+      this.timer = null
    },
 
 
@@ -218,6 +243,7 @@ export default{
       loadUserInfo(){
         var info = JSON.parse(localStorage.getItem("userInfo") || '{}')
         this.userInfo = info;
+
       },
       searchFormWidth() {
 	      let w = window.innerWidth;

@@ -138,6 +138,12 @@ export default {
                        
                          _this.formData = res.data.data
                          _this.showContent = true
+                       }else if(res & res.data.code == 403){
+                           _this.showContent = false
+                           _this.$message.error("没有权限访问，请联系服务商")
+                       }else{
+                           _this.showContent = false
+                           _this.$message.error("系统错误")
                        }
                    
                 }).catch(function (res) {

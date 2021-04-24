@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="container" v-if="showContent">
 
       <div class="header">新币榜单</div>  
       <div class="table">
@@ -64,6 +64,7 @@
       
       data() {
         return {
+          showContent:true,
           loading: true,   
           tableDataBegin: [],
           tableDataName: "",
@@ -104,6 +105,13 @@
                     if (res && res.data.code == 200){
                           _this.tableDataEnd = res.data.data.items
                           _this.totalItems = res.data.data.totalCounts
+                          _this.showContent = true
+                       }else if(res & res.data.code == 403){
+                           _this.showContent = false
+                           _this.$message.error("没有权限访问，请联系服务商")
+                       }else{
+                           _this.showContent = false
+                           _this.$message.error("系统错误")
                        }
                    
 

@@ -1,6 +1,8 @@
 <template>
+   
   <div id="root">
-    <div id="head">
+    <div style="font-size:20px" v-if="!otcPermission[exchange]">没有权限，请联系服务商</div>
+    <div id="head" v-if="otcPermission[exchange]">
       <div style="margin-right:20px;">
         USDT买入 <el-input-number style="margin-right:10px;" v-model="usdtPrice[exchange].buy" controls-position="right" :min="5.00" :max="15.00" :precision="2" :step="0.01" size="mini"></el-input-number>
         卖出 <el-input-number v-model="usdtPrice[exchange].sell" controls-position="right" :min="5.00" :max="15.00" :precision="2" :step="0.01" size="mini"></el-input-number>
@@ -19,7 +21,7 @@
       
       
     </div>
-    <div id="body">
+    <div id="body" v-if="otcPermission[exchange]">
         <div :style="'position: absolute; left:' + (80+index*70)+'px;'+'top:' + (40+index*50)+'px;'" v-drag v-for="(item, index) in setting.otc" v-bind:key="index">
           <div class="otc-ad">
             <el-table
@@ -215,7 +217,7 @@ export default {
       ]
     };
   },
-  computed: mapState(["track","tradeFee", "otcDepth","usdtPrice", "marketTrade"]),
+  computed: mapState(["track","tradeFee", "otcDepth","usdtPrice", "marketTrade","otcPermission"]),
   directives: {
     drag(el){
       let oDiv = el; //当前元素
@@ -436,17 +438,17 @@ export default {
     },
 
   },
-  mounted: function () {
-    // this.setDragable(".otc-ad")
-    // console.log("this,store", this.$store);
-    // 发送ping保证活跃
-    setTimeout(()=>{
-        setInterval(()=>{
-          this.$store.dispatch("sendMessage","ping")
-        },5000)
-    }, 3000)
+  // mounted: function () {
+  //   // this.setDragable(".otc-ad")
+  //   // console.log("this,store", this.$store);
+  //   // 发送ping保证活跃
+  //   setTimeout(()=>{
+  //       setInterval(()=>{
+  //         this.$store.dispatch("sendMessage","ping")
+  //       },5000)
+  //   }, 3000)
     
-  },
+  // },
 };
 </script>
 

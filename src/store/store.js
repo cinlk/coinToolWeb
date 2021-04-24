@@ -21,7 +21,7 @@ export default new Vuex.Store({
             //show_guadan:true,//是否显示买卖一价挂单的利润
             dataSourceIndex: 0, // 由下面的dataSource的索引来区分
             dataSource:[
-                'ws://localhost:7002/ws', //火币后端，lk的
+                'ws://localhost:7001/ws', //火币后端，lk的
             ],
            
             sub_huobi:{//基于火币网的数据订阅
@@ -42,6 +42,8 @@ export default new Vuex.Store({
             isConnected: false,
             message: '',
             reconnectError: false,
+            heartbeatInterval: 5000,
+            heartBeatTimer: 0,
         },
 
          // 交易费用
@@ -131,6 +133,13 @@ export default new Vuex.Store({
            
         },
 
+        //permission
+        otcPermission:{
+            "huobi":true,
+            "okex":true,
+            "binance":true,
+        },
+
         // token
         isLogin:'0',
         token: localStorage.getItem('token') ? localStorage.getItem('token') : '',
@@ -147,6 +156,12 @@ export default new Vuex.Store({
             console.log(new Date().toTimeString().substring(0,8), "socket on open", state, event)
             Vue.prototype.$socket = event.currentTarget
             state.socket.isConnected = true
+            // 发送心跳
+
+            state.socket.heartBeatTimer = setInterval(() => {
+                
+                state.socket.isConnected &&  Vue.prototype.$socket.send("ping")
+            }, state.socket.heartbeatInterval);
             let subs = []
             // if(state.track.dataSourceIndex == 0){//火币
                 state.track.sub_huobi.otcRmb.forEach(element => {
@@ -217,6 +232,10 @@ export default new Vuex.Store({
         [SOCKET_ONCLOSE](state, event) {
             console.log("socket on close", state, event)
             state.socket.isConnected = false
+            clearInterval(state.socket.heartBeatTimer)
+            state.socket.heartBeatTimer = null
+
+
         },
         [SOCKET_ONERROR](state, event) {
             console.log("socket on error", state, event)
@@ -225,12 +244,18 @@ export default new Vuex.Store({
         // default handler called for all methods
         [SOCKET_ONMESSAGE](state, event) {
             
+
+            // 处理不同类型错误 分sub和unsub，在到具体的订阅信息 TODO
             // state.socket.message = event
-            console.log("on message", event.data)
+            //console.log("on message", event.data)
             if (event.data == "unathorization"){
                 // 关闭连接 TODO
-                 
+                console.log("authorization failed then close connection")
+                Vue.prototype.$socket.close()
+                return
+                //Vue.prototype.$socket.disconnect()
             }
+
             let message = {}
             try{
                 message = JSON.parse(event.data)
@@ -238,6 +263,21 @@ export default new Vuex.Store({
             } catch(err) {
                 return
             }
+
+
+            // 判断 otc 币访问权限
+            if (message.status == "no permission"){
+                console.log("not permit to access", message.exchange, message.channel)
+                state.otcPermission[message.exchange] = false
+                return
+            }
+            
+            if (message.status != "success"){
+                console.log("receiv from socket not success", message.message)
+                return
+            }
+
+
            
             // 只处理了  otc数据  TODO
             const ch = message.ch.split(".")
@@ -523,16 +563,15 @@ export default new Vuex.Store({
 
     },
     actions: {
-        sendMessage: function (context, message) {
-            // console.log("send",message)
-            if(typeof message == "object"){
-                // Vue.prototype.$socket.sendObj(message)
-                Vue.prototype.$socket.send(JSON.stringify(message))
-            } else {
-                Vue.prototype.$socket.send(message)
-            }
-        }
-        
+        // sendMessage: function (context, message) {
+        //     // console.log("send",message)
+        //     if(typeof message == "object"){
+        //         // Vue.prototype.$socket.sendObj(message)
+        //         Vue.prototype.$socket.send(JSON.stringify(message))
+        //     } else {
+        //         Vue.prototype.$socket.send(message)
+        //     }
+        // }
        
     },
 

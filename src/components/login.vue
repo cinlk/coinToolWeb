@@ -125,6 +125,7 @@
                         _this.$store.commit('SaveLoginDatafunction', res.data.data)
                         _this.$store.commit('$_setToken', info.token)
                         _this.$router.push({path: '/home'})
+                        
                    }else{
                         _this.$message.error("登录失败", res.data.message);
                    }
