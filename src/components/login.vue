@@ -61,6 +61,12 @@
             }
         }
      },
+
+     created: function () {
+       console.log(" login page created")  
+       //this.$disconnect()
+       this.$store.commit('disConnectWebSocket')
+     },
      methods: {
 
           getVerify() {
@@ -122,8 +128,7 @@
 
             if (this.checkPhone() == false) {
                 return false;
-            } 
-            
+            }
             if( this.loginData.code.length !=6  || !/^[0-9]+\.?[0-9]*$/.test(this.loginData.code)){
                this.$message.error("请填写正确的验证码");
                 return
@@ -140,7 +145,8 @@
                         _this.$store.commit('SaveLoginDatafunction', res.data.data)
                         _this.$store.commit('$_setToken', info.token)
                         _this.$router.push({path: '/home'})
-
+                        //_this.$connect('ws://localhost:7001/ws?token='+info.token)
+                        //_this.$store.commit('connectWebSocket')
                         return 
                         
                    }else if(res.response){

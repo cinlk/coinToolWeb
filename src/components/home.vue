@@ -227,6 +227,9 @@ export default{
       // clearInterval(this.timer)
       // this.timer = null
    },
+   beforeDestroy(){
+      console.log("home page before Destroy")
+   },
 
   //  beforeRouteLeave(to, from, next){
   //    clearInterval(this.timer);
@@ -236,7 +239,11 @@ export default{
   //  },
 
    created(){
+     console.log("home page created")
      this.loadUserInfo();
+     // start websocket connnection
+     this.$store.commit('connectWebSocket')
+
    },
    activated(){
         console.log("home page active")

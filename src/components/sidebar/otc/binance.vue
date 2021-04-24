@@ -448,6 +448,16 @@ export default {
   //   }, 3000)
     
   // },
+
+  activated:function () {
+    
+     console.log("binance page activated")
+     //this.$store.dispatch('binanceSub',"binance")
+  },
+
+  deactivated: function () {
+    console.log("binance page deactivated")
+  },
 };
 </script>
 

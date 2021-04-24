@@ -153,6 +153,12 @@ export default new Vuex.Store({
         // 什么时候触发 socket 建立连接？
         // 网页打开时 建立了socket 连接
         [SOCKET_ONOPEN](state, event) {
+
+            if (state.socket.isConnected == true){
+                return
+            }
+
+            //console.log(Vue.prototype, event)
             console.log(new Date().toTimeString().substring(0,8), "socket on open", state, event)
             Vue.prototype.$socket = event.currentTarget
             state.socket.isConnected = true
@@ -162,8 +168,11 @@ export default new Vuex.Store({
                 
                 state.socket.isConnected &&  Vue.prototype.$socket.send("ping")
             }, state.socket.heartbeatInterval);
+
+
+
             let subs = []
-            // if(state.track.dataSourceIndex == 0){//火币
+         
                 state.track.sub_huobi.otcRmb.forEach(element => {
                     subs.push({
                         sub: "market.otc."+element,
@@ -185,8 +194,7 @@ export default new Vuex.Store({
 
 
 
-            // } else if(state.track.dataSourceIndex == 1 ){//ok
-            // okex
+        
                 state.track.sub_okex.otcRmb.forEach(element => {
                     subs.push({
                         sub: "market.otc."+element,
@@ -200,7 +208,7 @@ export default new Vuex.Store({
                     })
                 })
 
-                // binance
+                
                 state.track.sub_binance.otcRmb.forEach(element => {
                     subs.push({
                         sub: "market.otc."+element,
@@ -216,7 +224,7 @@ export default new Vuex.Store({
                 })
 
                 
-            // }
+       
             let i = 0
             let interval = setInterval(()=>{
                 if(i < subs.length){
@@ -235,6 +243,8 @@ export default new Vuex.Store({
             clearInterval(state.socket.heartBeatTimer)
             state.socket.heartBeatTimer = null
 
+            //Vue.prototype.connect()
+
 
         },
         [SOCKET_ONERROR](state, event) {
@@ -251,7 +261,8 @@ export default new Vuex.Store({
             if (event.data == "unathorization"){
                 // 关闭连接 TODO
                 console.log("authorization failed then close connection")
-                Vue.prototype.$socket.close()
+                //console.log(Vue.prototype.$socket, Vue.prototype)
+                //Vue.prototype.$disconnect()
                 return
                 //Vue.prototype.$socket.disconnect()
             }
@@ -536,6 +547,7 @@ export default new Vuex.Store({
         },
         // mutations for reconnect methods
         [SOCKET_RECONNECT](state, count) {
+            
             console.log("socket reconnect", state, count)
             // console.info(state, count)
         },
@@ -558,6 +570,22 @@ export default new Vuex.Store({
         SaveLoginDatafunction(state, data) {
             //state.userInfo = data
             localStorage.setItem("userInfo", JSON.stringify(data))
+        },
+
+        connectWebSocket: function(state){
+            
+            //console.log(state)
+            if(state.socket.isConnected == false){
+                Vue.prototype.$connect(state.track.dataSource[0]+"?token="+state.token)
+
+            }
+
+        },
+
+        disConnectWebSocket: function(state){
+            if (state.socket.isConnected == true){
+                Vue.prototype.$disconnect()
+            }
         }
 
 
@@ -572,6 +600,84 @@ export default new Vuex.Store({
         //         Vue.prototype.$socket.send(message)
         //     }
         // }
+
+      
+
+        huobiSub: function(context, exchange){
+
+            
+            let subs  = []
+            context.state.track.sub_huobi.otcRmb.forEach(element => {
+                subs.push({
+                    sub: "market.otc."+element,
+                    exchange: exchange,
+                })
+            })
+            context.state.track.sub_huobi.depthUsdt.forEach(element => {
+                subs.push({
+                    sub: "market.spot.depth."+element,
+                    exchange: exchange,
+                })
+            })
+            context.state.track.sub_huobi.TradeUsdt.forEach(element => {
+                subs.push({
+                    sub: "market.spot.ticker."+element,
+                    exchange: exchange,
+                })
+            })
+            // 如果 Vue.prototype.$socket == undefine 说明未建立连接
+
+         
+           
+            subs.forEach(s => {
+                
+
+                Vue.prototype.$socket.send(JSON.stringify(s))
+            })
+        },
+
+        okexSub: function(context, exchange){
+            let subs = [] 
+            context.state.track.sub_okex.otcRmb.forEach(element => {
+                subs.push({
+                    sub: "market.otc."+element,
+                    exchange: exchange,
+                })
+            })
+            context.state.track.sub_okex.TradeUsdt.forEach(element => {
+                subs.push({
+                    sub: "market.spot.ticker."+element,
+                    exchange: exchange,
+                })
+            })
+
+            subs.forEach(s => {
+                Vue.prototype.$socket.send(JSON.stringify(s))
+            })
+        },
+
+        binanceSub: function(context, exchange){
+            let subs = []
+            context.state.track.sub_binance.otcRmb.forEach(element => {
+                subs.push({
+                    sub: "market.otc."+element,
+                    exchange: exchange,
+                })
+            })
+
+            context.state.track.sub_binance.TradeUsdt.forEach(element => {
+                subs.push({
+                    sub: "market.spot.ticker."+element,
+                    exchange: exchange,
+                })
+            })
+
+            subs.forEach(s => {
+                Vue.prototype.$socket.send(JSON.stringify(s))
+            })
+
+
+        }
        
     },
 

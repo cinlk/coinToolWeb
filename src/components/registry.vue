@@ -77,6 +77,11 @@ export default {
     this.identifyCode = "";
     this.makeCode(this.identifyCodes, 4);
     },
+
+    created(){
+        console.log("registry page created")
+        this.$store.commit('disConnectWebSocket')
+    },
     methods: {
            gotoregistry() {
                if (this.checkPhone() == false) {
@@ -106,6 +111,8 @@ export default {
                         _this.$store.commit('SaveLoginDatafunction', info)
                         _this.$router.push({path: '/home'})
 
+                        //_this.$connect('ws://localhost:7001/ws?token='+info.token)
+                        return
                    }else if(res.response){
                         if(res.response.data.code == 410){
                             _this.$message.error("手机号或验证码错误")

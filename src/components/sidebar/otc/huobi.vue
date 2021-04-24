@@ -468,16 +468,22 @@ export default {
   //   }, 3000)
     
   // },
+  mounted: function(){
+    console.log("huobi page mounted")
+  },
   activated: function(){
 
-    console.log("huobi connect websocket")
-    this.$connect('ws://localhost:7001/ws?token=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MTk3OTk4MTksInVpZCI6ImI3MTBkM2ViLTliMDgtNDA5Ny05ZWM2LThmOTg3OTU3ZTJmYSIsInJvbGVzIjpbIm1lbWJlciJdLCJleHRyYSI6eyJiaW5hbmNlIjoiMjAyMS0wNC0yNSAxNToxMToxMCIsImh1b2JpIjoiMjAyMS0wNC0yNiAwMDo0MTowNiIsIm9rZXgiOiIyMDIxLTA0LTIzIDE2OjQxOjA2IiwidHJ5IjoiM-WkqeivleeUqOacnyJ9fQ.nBZaCp5Db_z9GLDrFZ133VVx59v8AIS4QlWp63zavFN5e7deDc1xdetZhxkMU8RROEQ7kVpqc8taQaSPf2ZDug')
+    console.log("huobi page  activated")
+    //this.$connect('ws://localhost:7001/ws?token=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MTk3OTk4MTksInVpZCI6ImI3MTBkM2ViLTliMDgtNDA5Ny05ZWM2LThmOTg3OTU3ZTJmYSIsInJvbGVzIjpbIm1lbWJlciJdLCJleHRyYSI6eyJiaW5hbmNlIjoiMjAyMS0wNC0yNSAxNToxMToxMCIsImh1b2JpIjoiMjAyMS0wNC0yNiAwMDo0MTowNiIsIm9rZXgiOiIyMDIxLTA0LTIzIDE2OjQxOjA2IiwidHJ5IjoiM-WkqeivleeUqOacnyJ9fQ.nBZaCp5Db_z9GLDrFZ133VVx59v8AIS4QlWp63zavFN5e7deDc1xdetZhxkMU8RROEQ7kVpqc8taQaSPf2ZDug')
+
+    // sub huobi exchange
+    //this.$store.dispatch('huobiSub',"huobi")
 
   },
 
   deactivated: function(){
-    console.log("huobi close websocket")
-    this.$disconnect()
+    console.log("huobi  page deactivated ")
+    //this.$disconnect()
 
   },
 };

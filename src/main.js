@@ -10,10 +10,12 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 
 import "./sockets";
+
 import store from './store/store';
 
 import SIdentify from './components/code'
 Vue.component('s-identify', SIdentify)
+
 
 
 Vue.prototype.$axios = axios

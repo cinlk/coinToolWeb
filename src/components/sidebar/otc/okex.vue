@@ -438,6 +438,17 @@ export default {
     },
 
   },
+
+  activated: function(){
+    console.log("okex page activated")
+    //this.$store.dispatch('okexSub',"okex")
+
+  },
+
+  deactivated:function(){
+    console.log("okex page deactivated")
+
+  },
   // mounted: function () {
   //   // this.setDragable(".otc-ad")
   //   // console.log("this,store", this.$store);
