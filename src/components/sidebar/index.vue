@@ -55,7 +55,15 @@ export default {
     },
 
     created(){
+        console.log("index page created")
         this.getIndexInfo()
+    },
+
+    activated(){
+    console.log("index page activated")
+    },
+    deactivated(){
+    console.log("index page deactivated")
     },
 
     methods: {
@@ -64,15 +72,18 @@ export default {
               var _this = this;
               this.$axios.get("index").then(function (res) {
                     
-              if (res && res.data.code == 200){
+              if (res.data && res.data.code == 200){
                        
                    _this.indexInfo = res.data.data
                    _this.showContent = true
+                   _this.$message.success("获取数据成功")
+               }else{
+                    _this.$message.error("获取数据失败")
                }
 
                    
                 }).catch(function (res) {
-                    alert(res)
+                    _this.$message.error("系统异常")
                    
                 })
         }

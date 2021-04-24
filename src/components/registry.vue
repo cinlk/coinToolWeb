@@ -43,7 +43,7 @@
 
             <el-button class="registry-btn"  :disabled="!enableRegistry" type="primary" @click="gotoregistry()">注册</el-button>
             <p></p>
-            <router-link style="font-size:15px" to="login">已有账号? 登录</router-link>
+            <router-link style="font-size:15px" :to="enableRegistry ? 'login':'' ">已有账号? 登录</router-link>
 
         </el-form> 
 
@@ -79,26 +79,43 @@ export default {
     },
     methods: {
            gotoregistry() {
-               //console.log(this.identifyCode)
-               this.enableRegistry = false;
+               if (this.checkPhone() == false) {
+                return false;
+               }
+
+               if(this.registryData.code.length !=6  || !/^[0-9]+\.?[0-9]*$/.test(this.registryData.code)){
+                   this.$message.error("请填写正确的验证码");
+                    return
+                }
                if (this.registryData.verifyCode != this.identifyCode){
                    this.$message.error("图像验证码错误")
-                   this.enableRegistry = true;
+                    
                    return
                }
+
+                this.enableRegistry = false;        
                var _this = this;
                this.$axios.post("user/registry",{
                     phone: _this.registryData.phoneNum,
                     code: _this.registryData.code
                }).then(function (res) {
-                   if (res && res.data.code == 201){
+                   if (res.data && res.data.code == 201){
                         _this.$message.success("注册成功")
                         let info = res.data.data
                         _this.$store.commit('$_setToken', info.token)
+                        _this.$store.commit('SaveLoginDatafunction', info)
                         _this.$router.push({path: '/home'})
 
-                   }else{
-                        _this.$message.error("注册失败", res.data.message)
+                   }else if(res.response){
+                        if(res.response.data.code == 410){
+                            _this.$message.error("手机号或验证码错误")
+                        }else if(res.response.data.code == 409){
+                                _this.$message.error("账号已存在")
+                            
+                        }else{
+                             _this.$message.error("注册失败")
+                        }
+                       
                    }
 
                    _this.enableRegistry = true;
@@ -123,7 +140,7 @@ export default {
               this.randomNum(0, this.identifyCodes.length)
             ];
           }
-            console.log(this.identifyCode);
+            //console.log(this.identifyCode);
     },
 
 
@@ -141,17 +158,22 @@ export default {
                      phone: _this.registryData.phoneNum
                 }).then(function (res) {
                     // http status OK 被axios 进行了处理，这只http为ok才有数据处理 ？
-                    console.log(res)
-                    if (res && res.data.code == 200){
+                    
+                    if (res.data && res.data.code == 200){
                         _this.$message.success("发送验证码成功");
-                    }else{
-                        
-                         _this.$message.error("发送验证码错误", res.data.message);
+                    }else if(res.response){
+                        if (res.response.data.code == 409){
+                         _this.$message.error("账号已存在");
+
+                        }else{
+                         _this.$message.error("发送验证码错误");
+
+                        }
                     }
                    
                 }).catch(function (error) {
                     //console.log(error) 区分不同错误类型？
-                    _this.$message.error("发送验证码出错");
+                    _this.$message.error("发送验证码异常");
                 });
 
 

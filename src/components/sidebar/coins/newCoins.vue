@@ -1,8 +1,9 @@
 <template>
-    <div class="container" v-if="showContent">
+    <div class="container">
 
-      <div class="header">新币榜单</div>  
-      <div class="table">
+      <div v-if="!hasPermission">没有权限，请联系服务商</div>
+      <div class="header" v-if="showContent">新币榜单</div>  
+      <div class="table" v-if="showContent">
           <!-- <div> -->
           <!-- <el-input v-model="tableDataName" placeholder="请输入姓名" style="width:240px"></el-input> -->
           <!-- <el-button type="primary" @click="doFilter">搜索</el-button>
@@ -73,7 +74,8 @@
           pageSize: 10,
           totalItems: 0,
           filterTableDataEnd:[],
-          flag:false
+         
+          hasPermission: true,
         };
       },
       created() {
@@ -85,7 +87,8 @@
         // } else {
         //   this.tableDataEnd = this.tableDataBegin;
         // }
-        this.getLists()
+        console.log("newCoins page created")
+        //this.getLists()
 
       },
       methods: {
@@ -101,14 +104,18 @@
                   order: "desc"
                 }).then(function (res) {
                     
-                    _this.loading = false
-                    if (res && res.data.code == 200){
+                    
+                       _this.loading = false
+                       if (res.data && res.data.code == 200){
                           _this.tableDataEnd = res.data.data.items
                           _this.totalItems = res.data.data.totalCounts
                           _this.showContent = true
-                       }else if(res & res.data.code == 403){
+                         
+                          _this.hasPermission = true
+                       }else if(res.data && res.data.code == 403){
                            _this.showContent = false
                            _this.$message.error("没有权限访问，请联系服务商")
+                           _this.hasPermission = false
                        }else{
                            _this.showContent = false
                            _this.$message.error("系统错误")
@@ -117,8 +124,9 @@
 
                    
                 }).catch(function (res) {
-                    alert(res)
+                     _this.$message.error("系统异常")
                     _this.loading = false
+                    _this.showContent = false
                 })
 
                 // data => {
@@ -137,48 +145,8 @@
             window.open(url.href, '_blank')
              
         },
-        //前端搜索功能需要区分是否检索,因为对应的字段的索引不同
-        //用两个变量接收currentChangePage函数的参数
-        // doFilter() {
-        //   if (this.tableDataName == "") {
-        //     this.$message.warning("查询条件不能为空！");
-        //     return;
-        //   }
-        //   this.tableDataEnd = []
-        //   //每次手动将数据置空,因为会出现多次点击搜索情况
-        //   this.filterTableDataEnd=[]
-        //   this.tableDataBegin.forEach((value, index) => {
-        //     if(value.name){
-        //       if(value.name.indexOf(this.tableDataName)>=0){
-        //         this.filterTableDataEnd.push(value)
-        //       }
-        //     }
-        //   });
-        //   //页面数据改变重新统计数据数量和当前页
-        //   this.currentPage=1
-        //   this.totalItems=this.filterTableDataEnd.length
-        //   //渲染表格,根据值
-        //   this.currentChangePage(this.filterTableDataEnd)
-        //   //页面初始化数据需要判断是否检索过
-        //   this.flag=true
-        // },
-        // openData() {
-                
-        //        this.flag = false 
-        //        this.tableDataEnd = []
-        //        this.tableDataName = ""
-        //        this.currentPage = 1
-        //        this.totalItems = this.tableDataBegin.length;
-        //        console.log(this.pageSize)
-        //        if (this.totalItems > this.pageSize) {
-        //           for (let index = 0; index < this.pageSize; index++) {
-        //             this.tableDataEnd.push(this.tableDataBegin[index]);
-        //           }
-        //         } else {
-        //           this.tableDataEnd = this.tableDataBegin;
-        //         }
-
-        // },
+       
+      
         handleSizeChange(val) {
           
          
@@ -188,6 +156,7 @@
 
 
         handleCurrentChange(val) {
+          console.log("newCoins page change")
           this.currentPage = val;
           this.getLists()
         //   //需要判断是否检索
@@ -210,7 +179,14 @@
               }
             }
         }
-      }
+      },
+
+      activated(){
+            console.log("newCoins page actived")
+            
+            this.getLists()
+            
+      },
   };
 
 

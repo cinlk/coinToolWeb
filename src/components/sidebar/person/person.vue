@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="container" v-if="showContent">
         
       <h2>个人信息</h2>
        <el-form>
@@ -8,7 +8,7 @@
           </el-form-item>
 
            <el-form-item label="用户类型">
-
+                <span>{{userInfo.type}}</span>
            </el-form-item>
           <el-form-item    label="使用的服务">
               
@@ -33,8 +33,11 @@
  export default {
         data(){
             return{
+                showContent:false,
+                hasData:false,
                 userInfo:{
                     phone:"",
+                    type:"",
                     services: [
                         {
                             name:"",
@@ -47,8 +50,14 @@
         },
 
         created(){
+            console.log("person page created")
+        },
 
-            this.getUserInfo()
+        activated(){
+            console.log("person page actived")
+            if (this.hasData == false){
+                this.getUserInfo()
+            }
         },
 
         methods:{
@@ -58,14 +67,23 @@
               this.$axios.get("user/info").then(function (res) {
                     
                     
-                    if (res && res.data.code == 200){
+                    if (res.data && res.data.code == 200){
                           _this.userInfo = res.data.data
-                       }
-                   
-
+                          _this.hasData = true
+                          _this.showContent = true
+                          _this.$message.success("获取信息成功")
+                     }else if (res.response){
+                            if(res.response.data.code == 404){
+                                _this.$message.error("用户不存在")
+                            }else{
+                                _this.$message.error("获取用户数据失败")
+                            }
+                     }
+                    _this.hasData = false
                    
                 }).catch(function (res) {
-                    alert(res)
+                    _this.$message.error("系统异常")
+                    _this.hasData = false
            
                 })
             }

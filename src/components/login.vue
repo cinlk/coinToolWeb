@@ -33,7 +33,7 @@
 
             <el-button class="login-btn"  :disabled="!loginEnable"  type="primary" @click="gotologin()">登录</el-button>
             <p></p>
-          <router-link style="font-size:15px" to="registry">注册账号</router-link>
+          <router-link style="font-size:15px" :to="loginEnable ? 'registry':'' " >注册账号</router-link>
 
          </el-form>
     </div>
@@ -74,17 +74,23 @@
                 this.$axios.post("sms",{
                      type:"login",
                      phone: _this.loginData.phoneNum
-                }).then(function (res) {
-                    // http status OK 被axios 进行了处理，这只http为ok才有数据处理 ？
-                    console.log(res)
-                    if (res && res.data.code == 200){
+                }).then(function (res) {                    
+                    if(res.data && res.data.code == 200){
                         _this.$message.success("发送验证码成功");
-                    }else{
-                         _this.$message.error("发送验证码错误", res.data.message);
+                        return
+                    }
+                    if (res.response){
+                        if (res.response.data.code == 404){
+                            _this.$message.error("用户不存在");
+                        }else if(res.response.data.code == 400){
+                            _this.$message.error("请求参数错误"); 
+                        }else{
+                           _this.$message.error("发送验证码出错");
+                        }
                     }
                    
                 }).catch(function (error) {
-                    _this.$message.error("发送验证码出错");
+                    _this.$message.error("异常错误");
                 });
 
                 const TIME_COUNT = 60; //更改倒计时时间
@@ -113,27 +119,45 @@
 
         },
         gotologin(){
+
+            if (this.checkPhone() == false) {
+                return false;
+            } 
+            
+            if( this.loginData.code.length !=6  || !/^[0-9]+\.?[0-9]*$/.test(this.loginData.code)){
+               this.$message.error("请填写正确的验证码");
+                return
+            }
             var _this = this;
             this.loginEnable = false;
             this.$axios.post("user/login",{
                      code: _this.loginData.code,
                      phone: _this.loginData.phoneNum
                 }).then(function (res) {
-                   if (res && res.data.code == 200){
+                   if (res.data && res.data.code == 200){
                         let info = res.data.data
                         console.log(res.data)
                         _this.$store.commit('SaveLoginDatafunction', res.data.data)
                         _this.$store.commit('$_setToken', info.token)
                         _this.$router.push({path: '/home'})
+
+                        return 
                         
-                   }else{
-                        _this.$message.error("登录失败", res.data.message);
+                   }else if(res.response){
+                        
+                        if(res.response.data.code == 410){
+                            _this.$message.error("手机或验证码错误");
+
+                        }else{
+                            _this.$message.error("登录失败");
+                        }
+                        
                    }
                    _this.loginEnable = true 
                    //_this.$message.success("发送验证码成功");
                 }).catch(function (error) {
                     _this.loginEnable = true 
-                    _this.$message.error("登录失败", error);
+                    _this.$message.error("系统异常", error);
                 });
         }
      }

@@ -1,6 +1,7 @@
 <template>
-    <div class="container" v-if="showContent">
-        <div class="header">
+    <div class="container"  >
+        <div v-if="!hasPermission">没有权限，请联系服务商</div>
+        <div class="header" v-if="showContent">
             <!-- <div>
                 <img :src="projectIconImgUrl"/>
                 <div>{{this.coinName}}</div>
@@ -31,7 +32,7 @@
 
         </div>
 
-        <div class="body">
+        <div class="body" v-if="showContent">
 
 
              <div class="col">
@@ -96,6 +97,7 @@ export default {
 
     data(){
         return {
+           hasPermission: true, 
            showContent:false, 
            formData: {
                lock:false,
@@ -138,8 +140,10 @@ export default {
                        
                          _this.formData = res.data.data
                          _this.showContent = true
-                       }else if(res & res.data.code == 403){
+                        _this.hasPermission = true
+                       }else if(res.data && res.data.code == 403){
                            _this.showContent = false
+                           _this.hasPermission = false
                            _this.$message.error("没有权限访问，请联系服务商")
                        }else{
                            _this.showContent = false
@@ -147,7 +151,9 @@ export default {
                        }
                    
                 }).catch(function (res) {
-                    alert(res)
+                   _this.$message.error("系统异常")
+                   _this.showContent = false
+
                     
                 })
         },

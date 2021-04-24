@@ -9,13 +9,16 @@
                   </el-col>
                   <el-col :span="8" class="userInfo" id="aaa">
                        <div class="grid-content bg-purple-light">
-                           <span class="el-dropdown-link userinfo-inner">欢迎你   {{userInfo.phone}}</span>
+                           
+                           <span v-if="!userInfo.extra.member" class="el-dropdown-link userinfo-inner" style="color:red"> {{userInfo.extra.type}}  {{userInfo.extra.huobi.split(" ")[0]}}到期</span> 
+                           <span v-if="userInfo.extra.member" class="el-dropdown-link userinfo-inner">欢迎你   {{ userInfo.extra.type }} </span>
                             
                        </div>
                         
                        <div class="avatar-wrapper el-dropdown-selfdefine" role="button">
                               <img    src="../assets/avatar.png" @click="personal" class="avatar"/>
                               <i    class="el-icon-caret-bottom"></i>
+                               
                          </div> 
 
                   </el-col>
@@ -187,6 +190,10 @@ export default{
     //   }
     // },
     mounted(){
+       console.log("home page mounted")
+   
+     
+
       this.searchFormWidth(); // 组件初始化的时候不会触发onresize事件，这里强制执行一次
 	    window.onresize = () => {
 	      if(!this.timer){ // 使用节流机制，降低函数被触发的频率
@@ -198,11 +205,27 @@ export default{
 	        },400)
 	      }
 	    }
+
+
+          // 有时 不触发 destroy 有时不触发 deactived ? 不能销毁定时器
+        // 线上时间改成10分钟 比较长， 跳转到login界面间隔时间长, 可以到注册
+        // if(this.timer == null){
+        //     this.timer =  setInterval(() => {
+        //             // 检查token
+        //             _this.$axios.get("token/check")
+        //             console.log("home ticker")
+        //         }, 50000);
+        // }
+
+
    },
 
    destroyed(){
-     
+     console.log("home page destroyed")
      window.onresize = null;
+
+      // clearInterval(this.timer)
+      // this.timer = null
    },
 
   //  beforeRouteLeave(to, from, next){
@@ -216,21 +239,15 @@ export default{
      this.loadUserInfo();
    },
    activated(){
-        var _this = this;
-        // 在destroy不会被触发，切换界面会一直执行. 放在这里
-        // 默认在index 界面不会触发，切换到其它界面会触发
-        if(this.timer == null){
-            this.timer =  setInterval(() => {
-                    // 检查token
-                    _this.$axios.get("token/check")
-                    console.log("home ticker")
-                }, 5000);
-        }
+        console.log("home page active")
+       
    },
 
    deactivated(){
-      clearInterval(this.timer)
-      this.timer = null
+
+      console.log("home page deactivated")
+
+     
    },
 
 
@@ -247,8 +264,9 @@ export default{
       },
       searchFormWidth() {
 	      let w = window.innerWidth;
-        //console.log(w)
+        
         var dom1 = document.querySelector('#aaa')
+        console.log(w)
 	      if (w > 1314){
           this.searchWidth = w + 250 -  parseInt(getComputedStyle(document.getElementById('aaa'),null).getPropertyValue('width').split(".")[0])
 
