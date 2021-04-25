@@ -66,6 +66,8 @@
        console.log(" login page created")  
        //this.$disconnect()
        this.$store.commit('disConnectWebSocket')
+       this.$store.commit('stopCheckTokenInterval')
+
      },
      methods: {
 

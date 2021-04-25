@@ -143,7 +143,8 @@ export default new Vuex.Store({
         // token
         isLogin:'0',
         token: localStorage.getItem('token') ? localStorage.getItem('token') : '',
-        userInfo: {} || JSON.parse(localStorage.getItem("userInfo"))
+        userInfo: {} || JSON.parse(localStorage.getItem("userInfo")),
+        checkToken: null,
     },
     mutations: {
         // changeUsdtPrice(state,paylaod){
@@ -582,11 +583,30 @@ export default new Vuex.Store({
 
         },
 
+        // not used
         disConnectWebSocket: function(state){
             if (state.socket.isConnected == true){
                 Vue.prototype.$disconnect()
             }
-        }
+        },
+
+        checkTokenInterval: function(state){
+            if (state.checkToken == null){
+                state.checkToken =  setInterval(() => {
+                    // 检查token
+                    Vue.prototype.$axios.get("token/check")
+                    console.log("check token ticker")
+                }, 5000);
+            
+            }
+        },
+
+        stopCheckTokenInterval: function(state){
+            clearInterval(state.checkToken)
+            state.checkToken = null
+        },
+
+
 
 
     },

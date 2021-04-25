@@ -81,6 +81,7 @@ export default {
     created(){
         console.log("registry page created")
         this.$store.commit('disConnectWebSocket')
+        this.$store.commit('stopCheckTokenInterval')
     },
     methods: {
            gotoregistry() {

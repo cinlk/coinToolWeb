@@ -243,6 +243,7 @@ export default{
      this.loadUserInfo();
      // start websocket connnection
      this.$store.commit('connectWebSocket')
+     this.$store.commit('checkTokenInterval')
 
    },
    activated(){
