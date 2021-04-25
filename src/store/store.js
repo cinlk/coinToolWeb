@@ -140,6 +140,8 @@ export default new Vuex.Store({
             "binance":true,
         },
 
+
+
         // token
         isLogin:'0',
         token: localStorage.getItem('token') ? localStorage.getItem('token') : '',
@@ -288,6 +290,9 @@ export default new Vuex.Store({
                 console.log("receiv from socket not success", message.message)
                 return
             }
+
+            // 
+            //if(message.exchange == )
 
 
            
@@ -594,7 +599,16 @@ export default new Vuex.Store({
             if (state.checkToken == null){
                 state.checkToken =  setInterval(() => {
                     // 检查token
-                    Vue.prototype.$axios.get("token/check")
+                    Vue.prototype.$axios.get("token/check").then(function(res){
+                           
+                        if(res.data && res.data.code == 200){
+                            state.otcPermission = res.data.data
+                            return
+                        }
+
+                    }).catch(function(res){
+                        //pass
+                    })
                     console.log("check token ticker")
                 }, 5000);
             
