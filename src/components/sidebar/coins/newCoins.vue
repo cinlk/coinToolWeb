@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="container" @click="cp">
 
       <div v-if="!hasPermission">没有权限，请联系服务商</div>
       <div class="header" v-if="showContent">新币榜单</div>  
@@ -179,7 +179,13 @@
                 this.tableDataEnd.push(list[from]);
               }
             }
-        }
+        },
+
+        cp(){
+               
+                this.$emit("closeDropmenu")
+            }
+
       },
 
       activated(){

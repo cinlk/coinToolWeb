@@ -1,6 +1,7 @@
 <template>
     <el-container class="container">
-        <el-header class="header" style="height:40px">
+       
+        <el-header  class="header" style="height:40px">
               <el-row style="height:40px">
                   <el-col :span="16"  >
                       <div  class="grid-content bg-purple">
@@ -16,7 +17,7 @@
                        </div>
                         
                        <div class="avatar-wrapper el-dropdown-selfdefine" role="button">
-                              <img    src="../assets/avatar.png" @click="personal" class="avatar"/>
+                              <img    src="../assets/avatar_icon.png" @click="personal" class="avatar"/>
                               <i    class="el-icon-caret-bottom"></i>
                                
                          </div> 
@@ -29,7 +30,7 @@
 
 
         </el-header>
-        <el-container>
+        <el-container >
             <el-aside class="sidebar" :width="isCollapse? '64px':'180px'">
 
                 <div class="toggle-button" @click="toggleCollapse"><i v-bind:class=" isCollapse ? 'el-icon-s-unfold':'el-icon-s-fold' "></i></div>
@@ -80,19 +81,19 @@
                 </el-menu>
                 </el-scrollbar>
             </el-aside>
-            <el-main class="main">
+            <el-main class="main" >
 
             <!-- <router-view></router-view>     -->
              
                 	<keep-alive>
-      <router-view v-if="$route.meta.keepAlive"></router-view>
+      <router-view @closeDropmenu="closeDropmenu" v-if="$route.meta.keepAlive"></router-view>
     </keep-alive>
-    <router-view v-if="!$route.meta.keepAlive"></router-view>
+    <router-view  @closeDropmenu="closeDropmenu" v-if="!$route.meta.keepAlive"></router-view>
                
             </el-main>     
         </el-container>
 
-      <ul v-if="UserDropMenuVisible" class="el-dropdown-menu el-popper el-dropdown-menu--medium" 
+      <ul v-if="UserDropMenuVisible"   class="el-dropdown-menu el-popper el-dropdown-menu--medium" 
       :style="{zIndex: 2050, position: 'absolute', top: '40px', width:'90px', left: `${searchWidth}px`}"
       
       >
@@ -252,6 +253,7 @@ export default{
      
    },
 
+ 
 
 
 
@@ -264,6 +266,9 @@ export default{
         this.userInfo = info;
 
       },
+
+   
+
       searchFormWidth() {
 	      let w = window.innerWidth;
         
@@ -322,7 +327,14 @@ export default{
           if (this.$route.name != "person"){
             this.$router.push({path: 'person'})
           }
+        },
+
+        // 子组件 传递数据给父组件
+        closeDropmenu(){
+         
+          this.UserDropMenuVisible = false
         }
+      
        
 
 
@@ -412,7 +424,8 @@ export default{
     border-radius:50%;
     /* background: url("../assets/avatar.png") no-repeat; */
     border-style: none;
-    /* border: 1px solid #d5d5d5; */
+    /* border: 1px  solid rgb(80,149,182);  */
+   
 }
 
 a {

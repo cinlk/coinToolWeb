@@ -1,5 +1,5 @@
 <template>
-    <div class="container" v-if="showContent">
+    <div class="container" @click="cp"  v-if="showContent" >
         
       <h2>个人信息</h2>
        <el-form>
@@ -89,6 +89,10 @@
                     _this.hasData = false
            
                 })
+            },
+            cp(){
+               
+                this.$emit("closeDropmenu")
             }
         }
 

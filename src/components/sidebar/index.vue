@@ -1,5 +1,5 @@
 <template>
-    <div class="main" v-if="showContent">
+    <div class="main" @click="cp" v-if="showContent">
 
         <div class="up">
 
@@ -19,7 +19,7 @@
         <div class="contact">
             <el-card>
                 <div class="el-card-head">
-                    <span>联系信息</span>
+                    <span>服务商联系信息</span>
                 </div>
                 <div class="el-card-body">
                         <div class="body">
@@ -94,7 +94,11 @@ export default {
                     _this.$message.error("系统异常")
                    
                 })
-        }
+        },
+         cp(){
+               
+                this.$emit("closeDropmenu")
+            }
     }
 }
 </script>
