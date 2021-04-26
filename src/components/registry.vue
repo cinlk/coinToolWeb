@@ -173,9 +173,10 @@ export default {
                         if (res.response.data.code == 409){
                          _this.$message.error("账号已存在");
 
+                        }else if(res.response.data.code == 429){
+                         _this.$message.error(res.response.data.message);
                         }else{
-                         _this.$message.error("发送验证码错误");
-
+                         _this.$message.error("发送验证码失败");
                         }
                     }
                    

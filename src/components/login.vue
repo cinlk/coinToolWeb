@@ -92,8 +92,10 @@
                             _this.$message.error("用户不存在");
                         }else if(res.response.data.code == 400){
                             _this.$message.error("请求参数错误"); 
+                        }else if(res.response.data.code == 429){
+                           _this.$message.error(res.response.data.message)
                         }else{
-                           _this.$message.error("发送验证码出错");
+                            _this.$message.error("发送验证码失败");
                         }
                     }
                    
