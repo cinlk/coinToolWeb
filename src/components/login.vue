@@ -1,6 +1,14 @@
 <template>
     <div class="login">
         
+
+
+        <div class="brick">
+            起来搬砖了~
+        </div>
+        <!-- <div>
+            <img src="../assets/coinexchange.png"/>
+        </div> -->
          <el-form 
             class="login-form"
             label-position="top"
@@ -8,7 +16,8 @@
             v-model="loginData"
          >
 
-          <h2>用户登录</h2>
+
+          <h2 style="text-align:center">用户登录</h2>
 
            <el-form-item>
             <el-input  type="tel" placeholder="手机号" v-model="loginData.phoneNum">  </el-input>
@@ -188,8 +197,17 @@
         display: flex;
         justify-content: center;
         align-items: center;
+        flex-direction: column;
     }
 
+
+.brick{
+    font-size: 30px;
+    margin-bottom: 30px;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    color: #B22222;
+    
+}
 .login-form{
         width: 380px;
         background: white;

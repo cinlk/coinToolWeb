@@ -1,10 +1,18 @@
 <template>
     <div class="main" v-if="showContent">
 
-        <div class="introduce">
-                <h2 style="margin-top:10px;font-size:26px;font-weight:100;color:#676a6c;font-family:open sans,Helvetica Neue,Helvetica,Arial,sans-serif">{{indexInfo.subtitle}}</h2>
-                <p style="color:#676a6c;font-size:13px;font-family:open sans,Helvetica Neue,Helvetica,Arial,sans-serif">{{indexInfo.description}}</p>
+        <div class="up">
+
+            <div class="introduce">
+                <h2 style="margin-top:10px; font-size:26px;font-weight:600;color:#676a6c;font-family:open sans,Helvetica Neue,Helvetica,Arial,sans-serif">{{indexInfo.subtitle}}</h2>
+                <p style="color:#676a6c;font-size:15px;font-family:open sans,Helvetica Neue,Helvetica,Arial,sans-serif">{{indexInfo.description}}</p>
         </div>
+
+                <div >
+                    <img class="righimg" src="../../assets/growup.png"/>
+                </div>
+        </div>
+        
 
 
         <div class="line"></div> 
@@ -16,13 +24,13 @@
                 <div class="el-card-body">
                         <div class="body">
                             <p>
-                                <i class="el-icon-user-solid"> QQ号</i>
+                                <i class="el-icon-user-solid"> QQ:</i>
                                 <a target="_blank" href="https://qm.qq.com/cgi-bin/qm/qr?k=HcobkHn0P_IdFwvTUEE7TiNd_JMGk4AC&noverify=0" class="el-link el-link--default">
                                     <span class="el-link--inner">{{indexInfo.contactQQ}}</span></a>
 
                             </p>
                             <p>
-                                <i class="el-icon-s-promotion"> Telegram号</i>
+                                <i class="el-icon-s-promotion"> Telegram:</i>
                                 <a target="_blank">{{indexInfo.contactTelegram}}</a>
                             </p>
                         </div>
@@ -103,6 +111,20 @@ export default {
 }
 
 
+.up{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: flex-start;
+
+}
+
+.righimg{
+    width: 300px;
+    height: 200px;
+    padding-top: 20px;
+  
+}
 .introduce{
     display: flex;
     flex-direction: column;
@@ -112,6 +134,7 @@ export default {
     margin-top:50px;
     margin-left: 40px;
     margin-right: 50px;
+    width: 50%;
 
 
 }

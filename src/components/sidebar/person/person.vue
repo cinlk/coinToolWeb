@@ -10,12 +10,15 @@
            <el-form-item label="用户类型">
                 <span>{{userInfo.type}}</span>
            </el-form-item>
-          <el-form-item    label="使用的服务">
+          <el-form-item    label="当前服务">
               
               <div class="services">
                 <div v-for=" (item, index) in userInfo.services" :key="index">
                    <span style="font-size:15px; margin-right:20px">服务名称 {{item.name}}</span>
                    <span>到期时间 {{item.endTime}}</span>
+                   <span v-if="!item.active" style="margin-left:10px; color:crimson">(服务过期,如需继续试用请联系服务商)</span>
+                   <span v-if="item.active" style="margin-left:10px; color:green">(可用)</span>
+
                 </div>
               </div>
               

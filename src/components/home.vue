@@ -1,16 +1,16 @@
 <template>
     <el-container class="container">
         <el-header class="header" style="height:40px">
-              <el-row>
-                  <el-col :span="16" class="headerLogo">
-                      <div class="grid-content bg-purple">
-                          <img src="../assets/top.png" alt="无法显示图片" style="width:400px;height: 30px" />
+              <el-row style="height:40px">
+                  <el-col :span="16"  >
+                      <div  class="grid-content bg-purple">
+                          <img src="../assets/top.png" alt="无法显示图片" style="width:250px;height: 40px" />
                       </div>
                   </el-col>
                   <el-col :span="8" class="userInfo" id="aaa">
                        <div class="grid-content bg-purple-light">
                            
-                           <span v-if="!userInfo.extra.member" class="el-dropdown-link userinfo-inner" style="color:red"> {{userInfo.extra.type}}  {{userInfo.extra.huobi.split(" ")[0]}}到期</span> 
+                           <span v-if="!userInfo.extra.member" class="el-dropdown-link userinfo-inner" style="color:ghostwhite"> {{userInfo.extra.type}}  {{userInfo.extra.huobi.split(" ")[0]}}到期</span> 
                            <span v-if="userInfo.extra.member" class="el-dropdown-link userinfo-inner">欢迎你   {{ userInfo.extra.type }} </span>
                             
                        </div>
@@ -136,7 +136,7 @@ export default{
         
                 {
                       path: "otc",
-                      name: "otc",
+                      name: "OTC市场",
                       order: "2",
                       children: [
                         {
@@ -156,7 +156,7 @@ export default{
                 },
                 {
                   path: "coin",
-                  name: "数字币数据",
+                  name: "新币数据",
                   order: "3",
                   children: [
                     {
@@ -168,14 +168,8 @@ export default{
 
                 {
                   path: "datamangeinfo",
-                  name: "数据字典",
+                  name: "其它",
                   order: "4",
-                  children: [
-                    {
-                      path: "datamangeinfo",
-                      name: "岗位类型",
-                    },
-                  ],
                 },
 
 
@@ -274,7 +268,7 @@ export default{
 	      let w = window.innerWidth;
         
         var dom1 = document.querySelector('#aaa')
-        console.log(w)
+        //console.log(w)
 	      if (w > 1314){
           this.searchWidth = w + 250 -  parseInt(getComputedStyle(document.getElementById('aaa'),null).getPropertyValue('width').split(".")[0])
 
@@ -348,8 +342,9 @@ export default{
 }
 
 .header{
-    background: darkcyan;
+    background: rgb(60,152,188);
     color: #fff;
+    padding: 0;
     
 
 }
@@ -373,10 +368,7 @@ export default{
   height: auto;
   cursor: pointer;
 }
-.headerLogo {
-  line-height: 40px;
-  margin-top: 5px;
-}
+
 
 .userInfo {
   margin-top: 2px;

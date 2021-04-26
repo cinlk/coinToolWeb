@@ -610,7 +610,7 @@ export default new Vuex.Store({
                         //pass
                     })
                     console.log("check token ticker")
-                }, 5000);
+                }, 60000);
             
             }
         },

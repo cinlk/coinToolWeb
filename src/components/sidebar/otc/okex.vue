@@ -492,6 +492,11 @@ body{
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
 }
+
+.el-input-number--mini{
+  width: 90px;
+}
+
 .setting-btn{
   height: 22px;
   width: 22px;

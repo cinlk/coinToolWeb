@@ -5,7 +5,7 @@
     <div id="head" v-if="otcPermission[exchange]">
       <!-- <div style="font-weight:bolder;">OTC套利工具{{(track.dataSourceIndex== 0 || track.dataSourceIndex == 1)?"--火币":"--OK欧易"}}</div> -->
       <div style="margin-right:20px;">
-        USDT买入 <el-input-number style="margin-right:10px;" v-model="usdtPrice[exchange].buy" controls-position="right" :min="5.00" :max="15.00" :precision="2" :step="0.01" size="mini"></el-input-number>
+         USDT买入 <el-input-number style="margin-right:10px;" v-model="usdtPrice[exchange].buy" controls-position="right" :min="5.00" :max="15.00" :precision="2" :step="0.01" size="mini"></el-input-number>
         卖出 <el-input-number v-model="usdtPrice[exchange].sell" controls-position="right" :min="5.00" :max="15.00" :precision="2" :step="0.01" size="mini"></el-input-number>
         <el-button style="margin-left:10px;" type="primary" @click="showSettingDialog" icon="el-icon-s-tools" size="mini">设置</el-button>
       </div>
@@ -518,6 +518,10 @@ body{
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
 }
+.el-input-number--mini{
+  width: 90px;
+}
+
 .setting-btn{
   height: 22px;
   width: 22px;
@@ -568,6 +572,7 @@ body{
     line-height: 15px;
 
 }
+
 /* .el-table .black-row{
   color: #303133;
 }

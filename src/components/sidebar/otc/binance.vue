@@ -478,6 +478,11 @@ body{
   background-color: white;
  
 }
+
+.el-input-number--mini{
+  width: 90px;
+}
+
 #head {
   display: flex;
   flex-direction: row;
