@@ -21,7 +21,7 @@ export default new Vuex.Store({
             //show_guadan:true,//是否显示买卖一价挂单的利润
             dataSourceIndex: 0, // 由下面的dataSource的索引来区分
             dataSource:[
-                'ws://localhost:7001/ws', //火币后端，lk的
+                'ws://103.118.42.205:7001/ws', //火币后端，lk的
             ],
            
             sub_huobi:{//基于火币网的数据订阅
@@ -248,9 +248,7 @@ export default new Vuex.Store({
             state.socket.isConnected = false
             clearInterval(state.socket.heartBeatTimer)
             state.socket.heartBeatTimer = null
-
-            //Vue.prototype.connect()
-
+           
 
         },
         [SOCKET_ONERROR](state, event) {
@@ -573,7 +571,12 @@ export default new Vuex.Store({
 	    },
 	    $_removeStorage(state, value){  // 删除token
               state.isLogin = '0';
+              // 清楚localstorage 里的数据
+              state.token = ""
+              state.userInfo = {}
 		      localStorage.removeItem('token');
+              localStorage.removeItem("userInfo")
+
 	    },
 
         SaveLoginDatafunction(state, data) {
@@ -583,6 +586,7 @@ export default new Vuex.Store({
 
         connectWebSocket: function(state){
             
+            // 之前连接的数据，可能会存在，更新tokne后，之前一直unauthorized尝试重连接
             //console.log(state)
             if(state.socket.isConnected == false){
                 Vue.prototype.$connect(state.track.dataSource[0]+"?token="+state.token)
@@ -596,6 +600,9 @@ export default new Vuex.Store({
             if (state.socket.isConnected == true){
                 Vue.prototype.$disconnect()
             }
+
+            
+
         },
 
         checkTokenInterval: function(state){

@@ -25,7 +25,7 @@ Vue.use(ElementUI)
 
 
 // 配置公共url
-axios.defaults.baseURL = "http://localhost:7001/api/v1/"
+axios.defaults.baseURL = "http://103.118.42.205:7001/api/v1/"
 
 
 // 全局路由构造函数，判断是否登录和要跳转到页面

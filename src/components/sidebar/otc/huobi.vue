@@ -1,8 +1,8 @@
 <template>
-  <div id="root">
+  <div class="container">
     <div style="font-size:20px" v-if="!otcPermission[exchange]">没有权限，请联系服务商</div>
 
-    <div id="head" v-if="otcPermission[exchange]">
+    <div class="toolbar" v-if="otcPermission[exchange]">
       <!-- <div style="font-weight:bolder;">OTC套利工具{{(track.dataSourceIndex== 0 || track.dataSourceIndex == 1)?"--火币":"--OK欧易"}}</div> -->
       <div style="margin-right:20px;">
          USDT买入 <el-input-number style="margin-right:10px;" v-model="usdtPrice[exchange].buy" controls-position="right" :min="5.00" :max="15.00" :precision="2" :step="0.01" size="mini"></el-input-number>
@@ -493,20 +493,16 @@ export default {
 body{
   box-sizing: border-box;
 }
-#root {
-  font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
-  color: #303133;
+.container {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 100%;
-  width: 100%;
-  /* font-size: 14px; */
   box-sizing: border-box;
   background-color: white;
  
 }
-#head {
+
+.toolbar {
   display: flex;
   flex-direction: row;
   justify-content: flex-start;

@@ -325,9 +325,17 @@ export default{
             cancelButtonText: "取消",
             type: "warning",
           }).then(() => {
-            _this.$store.commit('$_removeStorage');
-            _this.$router.push({ name: "login" });
-            _this.$axios.put("user/logout");
+            _this.$axios.put("user/logout").then(function (res) {
+                
+                _this.$store.commit('$_removeStorage');
+                _this.$router.push({ name: "login" });
+            }).catch(function (error) {
+              
+              _this.$store.commit('$_removeStorage');
+              _this.$router.push({ name: "login" });
+            });
+            
+            
           });
         },
 
