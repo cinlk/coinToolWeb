@@ -3,7 +3,6 @@
     <div style="font-size:20px" v-if="!otcPermission[exchange]">没有权限，请联系服务商</div>
 
     <div class="toolbar" v-if="otcPermission[exchange]">
-      <!-- <div style="font-weight:bolder;">OTC套利工具{{(track.dataSourceIndex== 0 || track.dataSourceIndex == 1)?"--火币":"--OK欧易"}}</div> -->
       <div style="margin-right:10px;">
          Huobi USDT买入 <el-input-number style="margin-right:5px;" v-model="usdtPrice[exchange].buy" controls-position="right" :min="5.00" :max="9.00" :precision="2" :step="0.01" size="mini"></el-input-number>
         卖出 <el-input-number v-model="usdtPrice[exchange].sell" controls-position="right" :min="5.00" :max="9.00" :precision="2" :step="0.01" size="mini"></el-input-number>
@@ -98,18 +97,18 @@
       <el-form ref="settingForm" label-width="100px" label-position="left">
         
 
-        <el-form-item label="用户看盘模式">
+        <el-form-item label="看盘模式">
             <el-radio v-model="settingForm.userType" :label="1">散户看盘</el-radio>
             <el-radio v-model="settingForm.userType" :label="2">广告商看盘</el-radio>
         </el-form-item>
 
-        <el-form-item label="表格数据条数" >
+        <el-form-item label="表格数据个数" >
             <el-radio v-model="settingForm.count" :label="10">前10</el-radio>
             <el-radio v-model="settingForm.count" :label="20">前20</el-radio>
 
         </el-form-item>
 
-        <el-form-item label="币名称">
+        <el-form-item label="展示的币">
        
           <el-checkbox-group v-model="settingForm.otc">
             <el-checkbox v-for="(item, index) in track.sub_huobi.otcRmb" v-bind:key="index" :label="item" name="type">{{item.toUpperCase()}}</el-checkbox>
@@ -154,12 +153,12 @@
     </el-dialog>
 
     <el-dialog
-      title="挂单姓名匹配"
+      title="挂单昵称匹配"
       :visible.sync="otcSettingVisible"
       width="50%">
       <el-form ref="otcSettingForm" label-width="50px" label-position="left">
-        <el-form-item label="名称">
-          <el-input v-model.trim="otcSettingForm.name" placeholder="输入全称,多个全称称以;隔开"></el-input>
+        <el-form-item label="昵称">
+          <el-input v-model.trim="otcSettingForm.name" placeholder="输入昵称,多个昵称以;隔开"></el-input>
         </el-form-item>
        
       </el-form>
@@ -328,7 +327,6 @@ export default {
       return {textAlign: 'center', color:  this.style.redColor}
     },
     otcRowClassName: function({row,}) {
-      // 模糊匹配颜色行选择
       if (this.otcSettingForm.name == ""){
           return '';
       }
@@ -357,7 +355,6 @@ export default {
         return style
     },
     otcCellStyle: function({row, column,}){
-      // console.log({row, column, rowIndex, columnIndex})
       let style = {
         // lineHeight:"15px",
         // fontSize:"10px",
@@ -429,7 +426,7 @@ export default {
         }else if ( item == "ht" || item == "eos"){
           return 60
         }
-        return 80
+        return 85
 
     },
 

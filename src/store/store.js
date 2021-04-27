@@ -30,8 +30,8 @@ export default new Vuex.Store({
                 TradeUsdt:["btcusdt","ethusdt","htusdt","eosusdt"] // 实时币币交易数据
             },
             sub_okex:{//基于ok的数据订阅
-                otcRmb:["usdt","btc","eth","okb"],
-                TradeUsdt:["btcusdt","ethusdt","okbusdt"]
+                otcRmb:["usdt","btc","eth","okb","ltc"],
+                TradeUsdt:["btcusdt","ethusdt","okbusdt","ltcusdt"]
             },
             sub_binance: {
                 otcRmb:["usdt","btc","eth","bnb"],
@@ -95,6 +95,18 @@ export default new Vuex.Store({
                     bids:[],
                     asks:[],
                 },
+                "eth":{
+                    bids:[],
+                    asks:[],
+                },
+                "okb":{
+                    bids:[],
+                    asks:[],
+                },
+                "ltc":{
+                    bids:[],
+                    asks:[],
+                },
             },
             "binance":{
                 "usdt":{
@@ -137,7 +149,10 @@ export default new Vuex.Store({
                 "eosusdt":{}
             },
             "okex":{
-                "btcusdt":{}
+                "btcusdt":{},
+                "ethusdt":{},
+                "ltcusdt":{},
+                "okbusdt":{}
             },
             "binance":{
                 "btcusdt":{}
