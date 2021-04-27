@@ -1,13 +1,24 @@
 <template>
     <el-container class="container">
        
+       
         <el-header  class="header" style="height:40px">
               <el-row style="height:40px">
-                  <el-col :span="16"  >
+                  <el-col :span="globalNotifyMsg != '' ? 8:16"  >
                       <div  class="grid-content bg-purple">
                           <img src="../assets/top.png" alt="无法显示图片" style="width:250px;height: 40px" />
                       </div>
                   </el-col>
+
+                  <el-col :span="globalNotifyMsg != '' ? 8:0" >
+                        
+                         <div  v-if="globalNotifyMsg != ''" style="font-size:10px;line-height:13px;color:cyan;text-align:center;padding-top:10px">
+                           <i class="el-icon-warning"></i>
+                           <span >{{globalNotifyMsg}}</span>
+                         </div>
+
+                  </el-col >
+
                   <el-col :span="8" class="userInfo" id="aaa">
                        <div class="grid-content bg-purple-light">
                            
@@ -21,6 +32,7 @@
                               <i    class="el-icon-caret-bottom"></i>
                                
                          </div> 
+                      
 
                   </el-col>
               </el-row>
@@ -113,6 +125,8 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default{
     name: "Home",
 
@@ -184,6 +198,10 @@ export default{
     //     return (document.body.clientWidth - 600) +'px';
     //   }
     // },
+
+
+    computed: mapState(["globalNotifyMsg"]),
+
     mounted(){
        console.log("home page mounted")
    
@@ -201,7 +219,17 @@ export default{
 	      }
 	    }
 
-
+      
+      // const h = this.$createElement
+      // this.$notify({
+      //   title:"",
+      //   message:h('i',{ style: 'color: teal'}, '这是提示文案这是提示文案这是提示'),
+      //   duration:0,
+      //   position:"bottom-left",
+      //   type:"warning",
+      //   showClose:false,
+       
+      // });
           // 有时 不触发 destroy 有时不触发 deactived ? 不能销毁定时器
         // 线上时间改成10分钟 比较长， 跳转到login界面间隔时间长, 可以到注册
         // if(this.timer == null){

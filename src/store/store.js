@@ -140,6 +140,9 @@ export default new Vuex.Store({
             "binance":true,
         },
 
+        // system notification
+        globalNotifyMsg:"",
+
 
 
         // token
@@ -602,7 +605,8 @@ export default new Vuex.Store({
                     Vue.prototype.$axios.get("token/check").then(function(res){
                            
                         if(res.data && res.data.code == 200){
-                            state.otcPermission = res.data.data
+                            state.otcPermission = res.data.data.service
+                            state.globalNotifyMsg = res.data.data.content
                             return
                         }
 
