@@ -1,29 +1,40 @@
 <template>
-  <div id="root" >
+  <div class="container" >
     <div style="font-size:20px" v-if="!otcPermission[exchange]">没有权限，请联系服务商</div>
 
-    <div id="head" v-if="otcPermission[exchange]">
-      <div style="margin-right:20px;">
-        USDT买入 <el-input-number style="margin-right:10px;" v-model="usdtPrice[exchange].buy" controls-position="right" :min="5.00" :max="15.00" :precision="2" :step="0.01" size="mini"></el-input-number>
-        卖出 <el-input-number v-model="usdtPrice[exchange].sell" controls-position="right" :min="5.00" :max="15.00" :precision="2" :step="0.01" size="mini"></el-input-number>
-        <el-button style="margin-left:10px;" type="primary" @click="showSettingDialog" icon="el-icon-s-tools" size="mini">设置</el-button>
+    <div class="toolbar" v-if="otcPermission[exchange]">
+      <div style="margin-right:10px;">
+        Binance USDT买入 <el-input-number style="margin-right:5px;" v-model="usdtPrice[exchange].buy" controls-position="right" :min="5.00" :max="9.00" :precision="2" :step="0.01" size="mini"></el-input-number>
+        卖出 <el-input-number v-model="usdtPrice[exchange].sell" controls-position="right" :min="5.00" :max="9.00" :precision="2" :step="0.01" size="mini"></el-input-number>
+        <el-button style="margin-left:5px;" type="primary" @click="showSettingDialog" icon="el-icon-s-tools" size="mini">设置</el-button>
       </div>
   
-      <div style="color:darkmagenta"> 模式: {{ setting.userType == 1 ? '散户看盘' : '广告商看盘' }}  </div>
-      <div style="color:darkmagenta; margin-left:10px">otc手续费 {{setting.otcfee }}, 币币手续费 {{setting.coinfee}}  </div>
+      <div style="color:black; font-size:13px"> 
+            <span>模式: </span>
+            <span style="color:mediumblue">{{ setting.userType == 1 ? '散户看盘' : '广告商看盘' }}</span>
+      </div>
+       <div style="color:black; font-size:13px;margin-left:10px">
+            <span>otc手续费:</span>
+            <span style="color:mediumblue">{{setting.otcfee }}</span>
+            <span>币币手续费:</span>
+            <span style="color:mediumblue">{{setting.coinfee}}</span>
+       </div>
       
       <div class="tradePrice">
           <div style="margin: 0 5px; " v-for="(item, index) in setting.realtimePrice" :key="index">
-              <div>{{item +"价格: "}} {{ marketTrade[exchange][item]&&marketTrade[exchange][item].price ?  marketTrade[exchange][item].price : ""}}</div>
+            <div>
+                <span>{{item +"价格: "}}</span>
+                <span style="color:mediumblue">{{ marketTrade[exchange][item]&&marketTrade[exchange][item].price ?  marketTrade[exchange][item].price : ""}}</span>
+              </div>
           </div>
          
       </div>
       
       
     </div>
-    <div id="body" v-if="otcPermission[exchange]">
+    <div class="body" v-if="otcPermission[exchange]">
         <div :style="'position: absolute; left:' + (80+index*70)+'px;'+'top:' + (40+index*50)+'px;'" v-drag v-for="(item, index) in setting.otc" v-bind:key="index">
-          <div class="otc-ad">
+          <div class="otcData">
             <el-table
             
               max-height="640"
@@ -37,7 +48,7 @@
               
              
             > 
-              <el-table-column label="序号"  type="index" width="35" align="left" >
+              <el-table-column label="序号"  type="index" width="40" align="left" >
                 <template slot="header">
                   <div style="display:flex;flex-direction: column;justify-content: space-between;">
                     <button  class="setting-btn" @click="showOtcTableSetting()"><i class="el-icon-s-tools" style="margin-left: -8px;"></i></button>
@@ -71,7 +82,6 @@
             </el-table>
           </div>
         </div>
-      <!-- </div> -->
       
     </div>
     
@@ -79,23 +89,22 @@
       title="设置"
       :visible.sync="settingDialogVisible"
       width="50%">
-      <!-- <span>这是一段信息</span> -->
 
       <el-form ref="settingForm" label-width="100px" label-position="left">
         
 
-        <el-form-item label="用户看盘模式">
+        <el-form-item label="看盘模式">
             <el-radio v-model="settingForm.userType" :label="1">散户看盘</el-radio>
             <el-radio v-model="settingForm.userType" :label="2">广告商看盘</el-radio>
         </el-form-item>
 
-        <el-form-item label="表格数据条数" >
+        <el-form-item label="表格数据个数" >
             <el-radio v-model="settingForm.count" :label="10">前10</el-radio>
             <el-radio v-model="settingForm.count" :label="20">前20</el-radio>
 
         </el-form-item>
 
-        <el-form-item label="币名称">
+        <el-form-item label="展示的币">
        
           <el-checkbox-group v-model="settingForm.otc">
             <el-checkbox v-for="(item, index) in track.sub_binance.otcRmb" v-bind:key="index" :label="item" name="type">{{item.toUpperCase()}}</el-checkbox>
@@ -140,12 +149,12 @@
     </el-dialog>
 
     <el-dialog
-      title="挂单姓名匹配"
+      title="挂单昵称匹配"
       :visible.sync="otcSettingVisible"
       width="50%">
       <el-form ref="otcSettingForm" label-width="50px" label-position="left">
-        <el-form-item label="名称">
-          <el-input v-model.trim="otcSettingForm.name" placeholder="输入名称。多个名称以;隔开"></el-input>
+        <el-form-item label="昵称">
+          <el-input v-model.trim="otcSettingForm.name" placeholder="输入昵称,多个昵称以;隔开"></el-input>
         </el-form-item>
        
       </el-form>
@@ -233,7 +242,6 @@ export default {
               //通过事件委托，计算移动的距离
               let l = e.clientX - downX + disX;
               let t = e.clientY - downY + disY;
-              // console.log("all", disX, disY, downX, downY, e.clientX, e.clientY, l, t)
               //移动当前元素
               oDiv.style.left = l + "px";
               oDiv.style.top = t + "px";
@@ -251,19 +259,10 @@ export default {
   methods: {
     handleBuyUsdtChange: function(value){
       typeof value
-      // console.log(value)
-      // this.$store.commit({
-      //   type:"changeUsdtPrice",
-      //   buy:value
-      // })
+      
     },
     handleSellUsdtChange: function(value){
       typeof value
-      // console.log(value)
-      // this.$store.commit({
-      //   type:"changeUsdtPrice",
-      //   sell:value
-      // })
     },
     showSettingDialog: function(){
       this.settingDialogVisible = true
@@ -337,7 +336,7 @@ export default {
       let names = this.otcSettingForm.name.split(";")
      
       for (var n in names){
-            if(names[n] == row.name && row.otcRowClassName != "success-row")
+            if(names[n] == row.name)
                 return "success-row";
       }
       
@@ -360,7 +359,6 @@ export default {
         return style
     },
     otcCellStyle: function({row, column,}){
-      // console.log({row, column, rowIndex, columnIndex})
       let style = {
         // lineHeight:"12px",
         // fontSize:"10px",
@@ -432,68 +430,35 @@ export default {
         }else if ( item == "ht" || item == "eos"){
           return 60
         }
-        return 80
+        return 85
 
     },
 
-  },
-  // mounted: function () {
-  //   // this.setDragable(".otc-ad")
-  //   // console.log("this,store", this.$store);
-  //   // 发送ping保证活跃
-  //   setTimeout(()=>{
-  //       setInterval(()=>{
-  //         this.$store.dispatch("sendMessage","ping")
-  //       },5000)
-  //   }, 3000)
-    
-  // },
-
-  activated:function () {
-    
-     console.log("binance page activated")
-     //this.$store.dispatch('binanceSub',"binance")
-  },
-
-  deactivated: function () {
-    console.log("binance page deactivated")
   },
 };
 </script>
 
 <style scoped>
-body{
-  box-sizing: border-box;
-}
-#root {
-  font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
-  color: #303133;
+
+.container {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 100%;
-  width: 100%;
-  /* font-size: 14px; */
-  box-sizing: border-box;
-  background-color: white;
  
 }
 
 .el-input-number--mini{
-  width: 90px;
+  width: 100px;
 }
 
-#head {
+.toolbar {
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
-  width: 100%;
   height: 45px;
-  padding-left: 2%;
-  font-size: 13px;
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-  box-sizing: border-box;
+  padding-left: 10px;
+  border-bottom: 1px solid gainsboro;
 }
 .setting-btn{
   height: 22px;
@@ -506,72 +471,38 @@ body{
   /* box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1); */
   align-items: center;
 }
-#body {
+.body {
   height: 100%;
   width: 100%;
   position: relative;
 }
-.otc-ad {
+.otcData {
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
-  /* min-width: 500px;
-  max-width: 750px;
-  font-size: 12px;
-  position: absolute; */
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.3);
-  opacity:1;
-  background: white;
 }
-/* #bottom {
-  z-index:10000;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  font-size: 13px;
-  color: #303133;
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.2);
-  background: #FFFFFF;
-  
-} */
+ 
 .tradePrice {
     display: flex;
     justify-content: flex-start;
+    align-items: center;
     flex-wrap: wrap;
     flex-direction: row;
     margin-left: 15px;
-    width: 35%;
+    width: 30%;
     font-size: 10px;
     line-height: 15px;
 
 }
-/* .el-table .black-row{
-  color: #303133;
-}
-.el-table .red-row{
-  color:#ff4949;
-}
-.el-table .blue-row{
-  color:blue;
-}
-.el-table .green-row{
-  color:#13ce66;
-} */
+ 
 
-.el-table .cell {
-  line-height: 16px;
-  /* background: blue; */
-  height: 16px;
-  font-size: 10px;
+>>> .el-table .cell {
+   height: 16px;
+   line-height: 15px;
 }
 
-.el-table .success-row {
-      background: #f0f9eb;
+>>> .el-table .success-row {
+      background: lightblue;
     }
-/* el-table th{
-  background-color: #E6A23C;
-}
-.el-table tr, .el-table td {
-    background-color: #F2F6FC;
-} */
+
 </style>

@@ -447,11 +447,10 @@ export default {
 .toolbar {
   display: flex;
   flex-direction: row;
-  justify-content: flex-start;
+  justify-content: flex-start; 
   align-items: center;
   height: 45px;
   padding-left: 10px;
-  font-size: 13px;
   border-bottom: 1px solid gainsboro;
 }
 
@@ -500,7 +499,7 @@ export default {
 }
 
 >>> .el-table .success-row {
-      background: #f0f9eb;
-    }
+      background: lightblue;
+}
 
 </style>

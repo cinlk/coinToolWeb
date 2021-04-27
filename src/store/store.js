@@ -117,6 +117,14 @@ export default new Vuex.Store({
                     bids:[],
                     asks:[],
                 },
+                "eth":{
+                    bids:[],
+                    asks:[],
+                },
+                "bnb":{
+                    bids:[],
+                    asks:[],
+                },
             }
             
         },
@@ -155,7 +163,9 @@ export default new Vuex.Store({
                 "okbusdt":{}
             },
             "binance":{
-                "btcusdt":{}
+                "btcusdt":{},
+                "ethusdt":{},
+                "bnbusdt":{}
             }
                
         },
