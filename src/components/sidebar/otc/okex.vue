@@ -332,13 +332,14 @@ export default {
     },
     otcRowClassName: function({row,}) {
       // 模糊匹配颜色行选择
+      
       if (this.otcSettingForm.name == ""){
           return '';
       }
       let names = this.otcSettingForm.name.split(";")
      
       for (var n in names){
-            if(names[n] == row.name && row.otcRowClassName != "success-row")
+            if(names[n] == row.name)
                 return "success-row";
       }
       
@@ -565,6 +566,7 @@ body{
   /* background: blue; */
   height: 16px;
   font-size: 10px;
+  line-height: 16px;
 }
 
 .el-table .success-row {

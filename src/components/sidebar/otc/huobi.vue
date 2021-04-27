@@ -4,32 +4,39 @@
 
     <div class="toolbar" v-if="otcPermission[exchange]">
       <!-- <div style="font-weight:bolder;">OTC套利工具{{(track.dataSourceIndex== 0 || track.dataSourceIndex == 1)?"--火币":"--OK欧易"}}</div> -->
-      <div style="margin-right:20px;">
-         USDT买入 <el-input-number style="margin-right:10px;" v-model="usdtPrice[exchange].buy" controls-position="right" :min="5.00" :max="15.00" :precision="2" :step="0.01" size="mini"></el-input-number>
-        卖出 <el-input-number v-model="usdtPrice[exchange].sell" controls-position="right" :min="5.00" :max="15.00" :precision="2" :step="0.01" size="mini"></el-input-number>
-        <el-button style="margin-left:10px;" type="primary" @click="showSettingDialog" icon="el-icon-s-tools" size="mini">设置</el-button>
+      <div style="margin-right:10px;">
+         Huobi USDT买入 <el-input-number style="margin-right:5px;" v-model="usdtPrice[exchange].buy" controls-position="right" :min="5.00" :max="9.00" :precision="2" :step="0.01" size="mini"></el-input-number>
+        卖出 <el-input-number v-model="usdtPrice[exchange].sell" controls-position="right" :min="5.00" :max="9.00" :precision="2" :step="0.01" size="mini"></el-input-number>
+        <el-button style="margin-left:5px;" type="primary" @click="showSettingDialog" icon="el-icon-s-tools" size="mini">设置</el-button>
       </div>
   
-      <div style="color:darkmagenta"> 模式: {{ setting.userType == 1 ? '散户看盘' : '广告商看盘' }}  </div>
-      <div style="color:darkmagenta; margin-left:10px">otc手续费 {{setting.otcfee }}, 币币手续费 {{setting.coinfee}}  </div>
+      <div style="color:black; font-size:13px"> 
+        <span>模式:</span>
+        <span style="color:mediumblue">{{ setting.userType == 1 ? '散户看盘' : '广告商看盘' }} </span>
+      </div>
+
+      <div style="color:black; font-size:13px;margin-left:10px">
+            <span>otc手续费:</span>
+            <span style="color:mediumblue">{{setting.otcfee }}</span>
+            <span>币币手续费:</span>
+            <span style="color:mediumblue">{{setting.coinfee}}</span>
+          </div>
       
       <div class="tradePrice">
           <div style="margin: 0 5px; " v-for="(item, index) in setting.realtimePrice" :key="index">
-              <div>{{item +"价格: "}} {{ marketTrade[exchange][item]&&marketTrade[exchange][item].price ?  marketTrade[exchange][item].price : ""}}</div>
+              <div>
+                <span>{{item +"价格: "}}</span>
+                <span style="color:mediumblue">{{ marketTrade[exchange][item]&&marketTrade[exchange][item].price ?  marketTrade[exchange][item].price : ""}}</span>
+              </div>
           </div>
-          <!-- <div>实时价格1</div>
-          <div>实时价格2</div> -->
+
       </div>
       
       
     </div>
-    <div id="body" v-if="otcPermission[exchange]">
-      <!-- <div style="margin-top: 4px; margin-left: 5%; font-size: 12px; color:#606266;" v-if="track.log.is_profix_base_10000">利润(RMB)：依据设定的买卖USDT价，算出的每交易10000RMB的套利</div> -->
-      <!-- <div style="margin-top: 0; margin-left: 5%;"> -->
+    <div class="body" v-if="otcPermission[exchange]">
         <div :style="'position: absolute; left:' + (80+index*70)+'px;'+'top:' + (40+index*50)+'px;'" v-drag v-for="(item, index) in setting.otc" v-bind:key="index">
-          <!-- <div v-if="track.show_guadan && item !=='usdtrmb'" style="font-size: 12px; color: black;">以卖一价挂单利润为：{{otcDepth[item] && otcDepth[item].profix_base_ask_1}}</div> -->
-          <!-- <div v-if="track.show_guadan && item !=='usdtrmb'" style="font-size: 12px; color: black;">以买一价挂单利润为：{{otcDepth[item] && otcDepth[item].profix_base_bid_1}}</div> -->
-          <div class="otc-ad">
+          <div class="otcData">
             <el-table
             
               max-height="640"
@@ -43,11 +50,11 @@
               
              
             > 
-              <el-table-column label="序号"  type="index" width="35" align="left" >
+              <el-table-column label="序号"  type="index" width="40" align="left" >
                 <template slot="header">
                   <div style="display:flex;flex-direction: column;justify-content: space-between;">
                     <button  class="setting-btn" @click="showOtcTableSetting()"><i class="el-icon-s-tools" style="margin-left: -8px;"></i></button>
-                    <!-- <span>设置</span> -->
+                 
                   </div>
                 </template>
               </el-table-column>
@@ -78,7 +85,7 @@
             </el-table>
           </div>
         </div>
-      <!-- </div> -->
+      
       
     </div>
     
@@ -139,15 +146,6 @@
             <div style="font-weight: bold; margin-left: 14px;">{{settingForm.colorSelect? "红涨绿跌" : "绿涨红跌"}}</div>
           </div>
         </el-form-item>
-        <!-- <el-form-item label="手续费" >
-          <el-select v-model="settingForm.feeVisiable" placeholder="是否手续费抵扣">
-            <el-option label="不抵扣" value="1"></el-option>
-            <el-option label="抵扣" value="2"></el-option>
-          </el-select>
-        </el-form-item> -->
-        <!-- <el-form-item label="费率" v-show="settingForm.feeVisiable == 2" style="width: 30%;" inline="true">
-          <el-input v-model="settingForm.fee"></el-input><span>%</span>
-        </el-form-item> -->
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="settingDialogVisible = false">取 消</el-button>
@@ -161,7 +159,7 @@
       width="50%">
       <el-form ref="otcSettingForm" label-width="50px" label-position="left">
         <el-form-item label="名称">
-          <el-input v-model.trim="otcSettingForm.name" placeholder="输入名称。多个名称以;隔开"></el-input>
+          <el-input v-model.trim="otcSettingForm.name" placeholder="输入全称,多个全称称以;隔开"></el-input>
         </el-form-item>
        
       </el-form>
@@ -212,8 +210,7 @@ export default {
       },
       otcSettingForm:{
         name:"",
-        // blueName:"",
-        // greenName:"",
+       
       },
       otcFees:[
           {value: 0, label: 0},
@@ -253,8 +250,7 @@ export default {
               //通过事件委托，计算移动的距离
               let l = e.clientX - downX + disX;
               let t = e.clientY - downY + disY;
-              // console.log("all", disX, disY, downX, downY, e.clientX, e.clientY, l, t)
-              //移动当前元素
+                //移动当前元素
               oDiv.style.left = l + "px";
               oDiv.style.top = t + "px";
 
@@ -271,19 +267,11 @@ export default {
   methods: {
     handleBuyUsdtChange: function(value){
       typeof value
-      // console.log(value)
-      // this.$store.commit({
-      //   type:"changeUsdtPrice",
-      //   buy:value
-      // })
+     
     },
     handleSellUsdtChange: function(value){
       typeof value
-      // console.log(value)
-      // this.$store.commit({
-      //   type:"changeUsdtPrice",
-      //   sell:value
-      // })
+     
     },
     showSettingDialog: function(){
       this.settingDialogVisible = true
@@ -310,22 +298,12 @@ export default {
       this.tradeFee[this.exchange].coinFee = this.settingForm.coinfee
       this.tradeFee[this.exchange].userType = this.settingForm.userType
 
-      //this.setting.realtimePrice = this.settingForm.realtimePrice
-
-      //this.setting.fee = this.settingForm.fee
-
       this.setting.count = this.settingForm.count
       this.$message({
                        showClose: true,
                        message: '修改成功',
                        type: 'success'
                    });
-      // let that = this
-      // setTimeout(function(){
-      //   that.setting.otc.forEach(element => { //延迟刷新是为了让dom刷新完后再设定可拖拽，和dom刷新机制有关系
-      //     that.setDragable("#"+element)
-      //   });
-      // },2000)
     },
     showOtcTableSetting: function(){
       this.otcSettingVisible = true
@@ -355,9 +333,9 @@ export default {
           return '';
       }
       let names = this.otcSettingForm.name.split(";")
-     
+       
       for (var n in names){
-            if(names[n] == row.name && row.otcRowClassName != "success-row")
+            if(names[n] == row.name)
                 return "success-row";
       }
       
@@ -366,7 +344,6 @@ export default {
     maxWidhStyle: function (item) {
         let style = {
             maxWidth: "230px",
-            
             
         }
         if (item == 'usdt'){
@@ -382,7 +359,7 @@ export default {
     otcCellStyle: function({row, column,}){
       // console.log({row, column, rowIndex, columnIndex})
       let style = {
-        // lineHeight:"12px",
+        // lineHeight:"15px",
         // fontSize:"10px",
         
       }
@@ -457,49 +434,17 @@ export default {
     },
 
   },
-  // mounted: function () {
-  //   // this.setDragable(".otc-ad")
-  //   // console.log("this,store", this.$store);
-  //   // 发送ping保证活跃
-  //   setTimeout(()=>{
-  //       setInterval(()=>{
-  //         this.$store.dispatch("sendMessage","ping")
-  //       },5000)
-  //   }, 3000)
-    
-  // },
-  mounted: function(){
-    console.log("huobi page mounted")
-  },
-  activated: function(){
 
-    console.log("huobi page  activated")
-    //this.$connect('ws://localhost:7001/ws?token=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MTk3OTk4MTksInVpZCI6ImI3MTBkM2ViLTliMDgtNDA5Ny05ZWM2LThmOTg3OTU3ZTJmYSIsInJvbGVzIjpbIm1lbWJlciJdLCJleHRyYSI6eyJiaW5hbmNlIjoiMjAyMS0wNC0yNSAxNToxMToxMCIsImh1b2JpIjoiMjAyMS0wNC0yNiAwMDo0MTowNiIsIm9rZXgiOiIyMDIxLTA0LTIzIDE2OjQxOjA2IiwidHJ5IjoiM-WkqeivleeUqOacnyJ9fQ.nBZaCp5Db_z9GLDrFZ133VVx59v8AIS4QlWp63zavFN5e7deDc1xdetZhxkMU8RROEQ7kVpqc8taQaSPf2ZDug')
-
-    // sub huobi exchange
-    //this.$store.dispatch('huobiSub',"huobi")
-
-  },
-
-  deactivated: function(){
-    console.log("huobi  page deactivated ")
-    //this.$disconnect()
-
-  },
 };
 </script >
 
 <style  scoped>
-body{
-  box-sizing: border-box;
-}
+
+
 .container {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  box-sizing: border-box;
-  background-color: white;
- 
+  justify-content: flex-start;
 }
 
 .toolbar {
@@ -507,15 +452,13 @@ body{
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
-  width: 100%;
   height: 45px;
-  padding-left: 2%;
-  font-size: 13px;
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-  box-sizing: border-box;
+  padding-left: 10px;
+  border-bottom: 1px solid gainsboro;
 }
+
 .el-input-number--mini{
-  width: 90px;
+  width: 100px;
 }
 
 .setting-btn{
@@ -529,73 +472,39 @@ body{
   /* box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1); */
   align-items: center;
 }
-#body {
+.body {
   height: 100%;
   width: 100%;
   position: relative;
 }
-.otc-ad {
+.otcData {
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
-  /* min-width: 500px;
-  max-width: 750px;
-  font-size: 12px;
-  position: absolute; */
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.3);
-  opacity:1;
-  background: white;
 }
-/* #bottom {
-  z-index:10000;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  font-size: 13px;
-  color: #303133;
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.2);
-  background: #FFFFFF;
-  
-} */
+
 .tradePrice {
     display: flex;
     justify-content: flex-start;
+    align-items: center;
     flex-wrap: wrap;
     flex-direction: row;
     margin-left: 15px;
-    width: 35%;
+    width: 30%;
     font-size: 10px;
     line-height: 15px;
 
 }
 
-/* .el-table .black-row{
-  color: #303133;
-}
-.el-table .red-row{
-  color:#ff4949;
-}
-.el-table .blue-row{
-  color:blue;
-}
-.el-table .green-row{
-  color:#13ce66;
-} */
 
-.el-table .cell {
-  line-height: 16px;
-  /* background: blue; */
-  height: 16px;
-  font-size: 10px;
+ >>> .el-table .cell {
+   height: 16px;
+   line-height: 15px;
+ }
+ 
+
+>>> .el-table .success-row {
+      background: lightblue;
 }
 
-.el-table .success-row {
-      background: #f0f9eb;
-    }
-/* el-table th{
-  background-color: #E6A23C;
-}
-.el-table tr, .el-table td {
-    background-color: #F2F6FC;
-} */
 </style>

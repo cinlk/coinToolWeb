@@ -73,6 +73,18 @@ export default new Vuex.Store({
                     bids:[],
                     asks:[],
                 },
+                "eth":{
+                    bids:[],
+                    asks:[],
+                },
+                "ht":{
+                    bids:[],
+                    asks:[],
+                },
+                "eos":{
+                    bids:[],
+                    asks:[],
+                },
             },
             "okex":{
                 "usdt":{
@@ -101,13 +113,28 @@ export default new Vuex.Store({
                 "btcusdt":{
                     bids:[], //对应的是行情里面的买一买二...
                     asks:[], //对应的是行情里面的卖一卖二...      
+                },
+                "ethusdt":{
+                    bids:[], //对应的是行情里面的买一买二...
+                    asks:[], //对应的是行情里面的卖一卖二...      
+                },
+                "htusdt":{
+                    bids:[], //对应的是行情里面的买一买二...
+                    asks:[], //对应的是行情里面的卖一卖二...      
+                },
+                "eosusdt":{
+                    bids:[], //对应的是行情里面的买一买二...
+                    asks:[], //对应的是行情里面的卖一卖二...      
                 }
             }
             
         },
         marketTrade: { // 行情实时成交价 取第一个价格
             "huobi":{
-                "btcusdt":{}
+                "btcusdt":{},
+                "ethusdt":{},
+                "htusdt":{},
+                "eosusdt":{}
             },
             "okex":{
                 "btcusdt":{}
