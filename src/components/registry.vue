@@ -56,7 +56,6 @@
 
 
 export default {
-    //components: {SIdentify},
     name: "registry",
     data() {
         return  { 
@@ -79,7 +78,6 @@ export default {
     },
 
     created(){
-        console.log("registry page created")
         this.$store.commit('disConnectWebSocket')
         this.$store.commit('stopCheckTokenInterval')
     },
@@ -112,7 +110,6 @@ export default {
                         _this.$store.commit('SaveLoginDatafunction', info)
                         _this.$router.push({path: '/home'})
 
-                        //_this.$connect('ws://localhost:7001/ws?token='+info.token)
                         return
                    }else if(res.response){
                         if(res.response.data.code == 410){
@@ -120,7 +117,10 @@ export default {
                         }else if(res.response.data.code == 409){
                                 _this.$message.error("账号已存在")
                             
-                        }else{
+                        }else if (res.response.data.code == 429){
+                           _this.$message.error("注册太频繁请稍后再试");
+
+                        } else{
                              _this.$message.error("注册失败")
                         }
                        
@@ -148,7 +148,6 @@ export default {
               this.randomNum(0, this.identifyCodes.length)
             ];
           }
-            //console.log(this.identifyCode);
     },
 
 
@@ -164,9 +163,7 @@ export default {
                 this.$axios.post("sms",{
                      type:"registry",
                      phone: _this.registryData.phoneNum
-                }).then(function (res) {
-                    // http status OK 被axios 进行了处理，这只http为ok才有数据处理 ？
-                    
+                }).then(function (res) {                    
                     if (res.data && res.data.code == 200){
                         _this.$message.success("发送验证码成功");
                     }else if(res.response){
@@ -181,7 +178,6 @@ export default {
                     }
                    
                 }).catch(function (error) {
-                    //console.log(error) 区分不同错误类型？
                     _this.$message.error("发送验证码异常");
                 });
 
@@ -265,10 +261,5 @@ export default {
         width: 160px;
 
     }
-
-
-    
- 
-
    
 </style>

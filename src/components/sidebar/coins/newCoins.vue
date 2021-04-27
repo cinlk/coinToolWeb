@@ -4,11 +4,6 @@
       <div v-if="!hasPermission">没有权限，请联系服务商</div>
       <div class="header" v-if="showContent">新币榜单</div>  
       <div class="table" v-if="showContent">
-          <!-- <div> -->
-          <!-- <el-input v-model="tableDataName" placeholder="请输入姓名" style="width:240px"></el-input> -->
-          <!-- <el-button type="primary" @click="doFilter">搜索</el-button>
-          <el-button type="primary" @click="openData">展示数据</el-button> -->
-          <!-- </div> -->
         <div class="wrap_table">    
               <el-table
                 v-loading="loading"
@@ -78,19 +73,6 @@
           hasPermission: true,
         };
       },
-      created() {
-        // this.totalItems = this.tableDataBegin.length;
-        // if (this.totalItems > this.pageSize) {
-        //   for (let index = 0; index < this.pageSize; index++) {
-        //     this.tableDataEnd.push(this.tableDataBegin[index]);
-        //   }
-        // } else {
-        //   this.tableDataEnd = this.tableDataBegin;
-        // }
-        console.log("newCoins page created")
-        //this.getLists()
-
-      },
       methods: {
 
         getLists(){
@@ -130,19 +112,12 @@
                     _this.showContent = false
                 })
 
-                // data => {
-                //   console.info(data);
-                //   _this.loading = false;
-                //   _this.tableData = data.list;
-                //   _this.total = data.total;
-                // }
               
     
         },
         showCoin(val){
             
             let url = this.$router.resolve({path: `/coinDetail/${val}`})
-            // 跳转到新界面
             window.open(url.href, '_blank')
              
         },
@@ -157,17 +132,8 @@
 
 
         handleCurrentChange(val) {
-          console.log("newCoins page change")
           this.currentPage = val;
           this.getLists()
-        //   //需要判断是否检索
-        //   if (!this.flag) {
-        //     this.currentChangePage(this.tableDataBegin);
-        //     console.log(this.tableDataEnd);
-        //   } else {
-        //     this.currentChangePage(this.filterTableDataEnd);
-        //     console.log(this.tableDataEnd);
-        //   }
         },//组件自带监控当前页码
 
        currentChangePage(list) {
@@ -189,8 +155,6 @@
       },
 
       activated(){
-            console.log("newCoins page actived")
-            
             this.getLists()
             
       },

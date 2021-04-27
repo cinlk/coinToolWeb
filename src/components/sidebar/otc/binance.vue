@@ -184,8 +184,8 @@ export default {
       otcSettingVisible: false,
 
       setting:{
-        realtimePrice:[],//btcusdt,ltcusdt
-        otc:["usdt"],//btc,ltc,usdt
+        realtimePrice:[], 
+        otc:["usdt"], 
         otcfee:0,
         coinfee:0,
         count:20,
@@ -193,7 +193,6 @@ export default {
         colorSelect: true,
       },
       settingForm:{
-        //realtimePrice:[],
         otc:[],
         feeVisiable:"",
         otcfee:0,
@@ -205,8 +204,7 @@ export default {
       },
       otcSettingForm:{
         name:"",
-        // blueName:"",
-        // greenName:"",
+        
       },
       otcFees:[
           {value: 0, label: 0},
@@ -228,21 +226,17 @@ export default {
   computed: mapState(["track","tradeFee", "otcDepth","usdtPrice", "marketTrade","otcPermission"]),
   directives: {
     drag(el){
-      let oDiv = el; //当前元素
-      // 禁止选择网页上的文字
-      // document.onselectstart = function() {
-      //     return false;
-      // };
+      let oDiv = el;  
+
       oDiv.onmousedown = function(e){
           let disX = oDiv.offsetLeft;
           let disY = oDiv.offsetTop;
           let downX = e.clientX;
           let downY = e.clientY;
           document.onmousemove = function(e){
-              //通过事件委托，计算移动的距离
+          
               let l = e.clientX - downX + disX;
               let t = e.clientY - downY + disY;
-              //移动当前元素
               oDiv.style.left = l + "px";
               oDiv.style.top = t + "px";
 
@@ -251,7 +245,6 @@ export default {
               document.onmousemove = null;
               document.onmouseup = null;
           };
-          //return false不加的话可能导致黏连，就是拖到一个地方时div粘在鼠标上不下来，相当于onmouseup失效
           return false;
       };
     },
@@ -288,23 +281,12 @@ export default {
       this.tradeFee[this.exchange].otcFee = this.settingForm.otcfee
       this.tradeFee[this.exchange].coinFee = this.settingForm.coinfee
       this.tradeFee[this.exchange].userType = this.settingForm.userType
-
-      //this.setting.realtimePrice = this.settingForm.realtimePrice
-
-      //this.setting.fee = this.settingForm.fee
-
       this.setting.count = this.settingForm.count
       this.$message({
                        showClose: true,
                        message: '修改成功',
                        type: 'success'
                    });
-      // let that = this
-      // setTimeout(function(){
-      //   that.setting.otc.forEach(element => { //延迟刷新是为了让dom刷新完后再设定可拖拽，和dom刷新机制有关系
-      //     that.setDragable("#"+element)
-      //   });
-      // },2000)
     },
     showOtcTableSetting: function(){
       this.otcSettingVisible = true
@@ -313,7 +295,7 @@ export default {
       this.otcSettingVisible = false
     },
     otcHeaderCellStyleBuy: function({row, column, rowIndex, columnIndex}){
-      // 设定表头红涨绿跌or相反
+    
       typeof (row,rowIndex,columnIndex)
       if(column.type == "index"){
         return {textAlign: 'center'}
@@ -321,7 +303,7 @@ export default {
       return {textAlign: 'center',  color: this.style.greenColor}
     },
     otcHeaderCellStyleSell: function({row, column, rowIndex, columnIndex}){
-      // 设定表头红涨绿跌or相反
+   
       typeof (row,rowIndex,columnIndex)
       if(column.type == "index"){
         return {textAlign: 'center'}
@@ -329,7 +311,7 @@ export default {
       return {textAlign: 'center', color:  this.style.redColor}
     },
     otcRowClassName: function({row,}) {
-      // 模糊匹配颜色行选择
+    
       if (this.otcSettingForm.name == ""){
           return '';
       }
@@ -364,7 +346,7 @@ export default {
         // fontSize:"10px",
         
       }
-      // 依据利润的正负设定颜色
+   
       if(row.profix > 0 && column.label == "利润"){
         if(this.setting.colorSelect) {
           style.color = this.style.redColor
@@ -383,32 +365,30 @@ export default {
       return style
     },
     setDragable: function (drg, mov) {
-      // setDragable(要拖动的对象);
-      // setDragable(允许拖动的对象, 拖动要移动的对象);
-      // setDragable(标题栏, 窗体);
+   
       let drgObj = drg;
       let moveObj = mov || drg;
       function G(o) {
         return document.querySelector(o);
       }
-      //获取元素的纵坐标,距离文档顶部的高度
+    
       function getTop(e) {
         var offset = e.offsetTop;
         if (e.offsetParent != null) offset += getTop(e.offsetParent);
         return offset;
       }
-      //获取元素的横坐标,距离文档左边的宽度
+      
       function getLeft(e) {
         var offset = e.offsetLeft;
         if (e.offsetParent != null) offset += getLeft(e.offsetParent);
         return offset;
       }
-      //拖放开始
+  
       function dragstart(e) {
         let off = { x: e.x - getLeft(moveObj), y: e.y - getTop(moveObj) };
         moveObj.dragOff = off;
       }
-      //拖放结束
+   
       function dragend(e) {
         let off = moveObj.dragOff;
         moveObj.style.top = e.y - off.y + "px";
@@ -417,9 +397,9 @@ export default {
       if (typeof drg != "object") drgObj = G(drg);
       if (typeof mov != "object") moveObj = G(mov || drg);
       drgObj.draggable = true;
-      drgObj.style.cursor = "pointer"; //move
+      drgObj.style.cursor = "pointer";  
       moveObj.style.position = "absolute";
-      //监听拖动事件
+      
       drgObj.addEventListener("dragstart", dragstart, true);
       drgObj.addEventListener("dragend", dragend, true);
     },
@@ -463,12 +443,9 @@ export default {
 .setting-btn{
   height: 22px;
   width: 22px;
-  /* margin-left: 20px; */
-  /* border: 1px #EBEEF5; */
   border: 1px #303133;
   border-radius: 50%;
   background-color: aliceblue;  
-  /* box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1); */
   align-items: center;
 }
 .body {

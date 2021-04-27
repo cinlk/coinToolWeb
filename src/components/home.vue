@@ -130,6 +130,20 @@ import { mapState } from 'vuex'
 export default{
     name: "Home",
 
+     metaInfo: {
+        title: 'swapworker',
+        meta: [
+          {
+              name: 'description',
+              content: 'new coins btc eth otc blockchain ico exchange trade buy sell',
+          },
+          {
+              name: 'keywords',
+              content: 'new coins btc eth otc blockchain ico exchange trade buy sell'
+          }
+        ]
+      },
+
     data() {
         return {
 
@@ -192,21 +206,13 @@ export default{
             ]
         }
     },
-    // computed:{
-    //   screenWidth: function () {
-    //     //console.log(document.body.clientWidth)
-    //     return (document.body.clientWidth - 600) +'px';
-    //   }
-    // },
+  
 
 
     computed: mapState(["globalNotifyMsg"]),
 
     mounted(){
-       console.log("home page mounted")
    
-     
-
       this.searchFormWidth(); // 组件初始化的时候不会触发onresize事件，这里强制执行一次
 	    window.onresize = () => {
 	      if(!this.timer){ // 使用节流机制，降低函数被触发的频率
@@ -219,69 +225,20 @@ export default{
 	      }
 	    }
 
-      
-      // const h = this.$createElement
-      // this.$notify({
-      //   title:"",
-      //   message:h('i',{ style: 'color: teal'}, '这是提示文案这是提示文案这是提示'),
-      //   duration:0,
-      //   position:"bottom-left",
-      //   type:"warning",
-      //   showClose:false,
-       
-      // });
-          // 有时 不触发 destroy 有时不触发 deactived ? 不能销毁定时器
-        // 线上时间改成10分钟 比较长， 跳转到login界面间隔时间长, 可以到注册
-        // if(this.timer == null){
-        //     this.timer =  setInterval(() => {
-        //             // 检查token
-        //             _this.$axios.get("token/check")
-        //             console.log("home ticker")
-        //         }, 50000);
-        // }
-
-
    },
 
    destroyed(){
-     console.log("home page destroyed")
      window.onresize = null;
-
-      // clearInterval(this.timer)
-      // this.timer = null
    },
-   beforeDestroy(){
-      console.log("home page before Destroy")
-   },
-
-  //  beforeRouteLeave(to, from, next){
-  //    clearInterval(this.timer);
-  
-  //    this.timer = null;
-  //    next()
-  //  },
 
    created(){
-     console.log("home page created")
+    
      this.loadUserInfo();
-     // start websocket connnection
      this.$store.commit('connectWebSocket')
      this.$store.commit('checkTokenInterval')
 
    },
-   activated(){
-        console.log("home page active")
-       
-   },
 
-   deactivated(){
-
-      console.log("home page deactivated")
-
-     
-   },
-
- 
 
 
 
@@ -299,9 +256,7 @@ export default{
 
       searchFormWidth() {
 	      let w = window.innerWidth;
-        
-        var dom1 = document.querySelector('#aaa')
-        //console.log(w)
+               
 	      if (w > 1314){
           this.searchWidth = w + 250 -  parseInt(getComputedStyle(document.getElementById('aaa'),null).getPropertyValue('width').split(".")[0])
 
@@ -353,8 +308,7 @@ export default{
             this.isCollapse = !this.isCollapse
         },
         personal(){
-          //console.log(screenWidth)
-          //console.log("personal")
+        
           this.UserDropMenuVisible = !this.UserDropMenuVisible
         },
 

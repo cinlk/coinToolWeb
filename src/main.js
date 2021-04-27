@@ -4,6 +4,8 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 
+import MetaInfo from 'vue-meta-info'
+
 import axios from 'axios'
 
 import ElementUI from 'element-ui'
@@ -21,6 +23,7 @@ Vue.component('s-identify', SIdentify)
 Vue.prototype.$axios = axios
 Vue.config.productionTip = false
 Vue.use(ElementUI)
+Vue.use(MetaInfo);
 
 
 

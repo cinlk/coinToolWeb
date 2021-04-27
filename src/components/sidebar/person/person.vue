@@ -52,12 +52,7 @@
             }
         },
 
-        created(){
-            console.log("person page created")
-        },
-
         activated(){
-            console.log("person page actived")
             if (this.hasData == false){
                 this.getUserInfo()
             }
@@ -91,7 +86,6 @@
                 })
             },
             cp(){
-               
                 this.$emit("closeDropmenu")
             }
         }

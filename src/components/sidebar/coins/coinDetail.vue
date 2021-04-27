@@ -2,10 +2,6 @@
     <div class="container"  >
         <div v-if="!hasPermission">没有权限，请联系服务商</div>
         <div class="header" v-if="showContent">
-            <!-- <div>
-                <img :src="projectIconImgUrl"/>
-                <div>{{this.coinName}}</div>
-            </div>  -->
             <div class="title">
                     <img :src="formData.projectIconImgUrl" style="margin-left:10px;object-fit:contain;width:80px; height:60px;"/>
                     <div style="width:50%;text-align:center; position:absolute;font-size:20px;font-weigh:bold;font-family: ARIAL,'Microsoft Yahei','微软雅黑'">{{formData.coinName}}</div>

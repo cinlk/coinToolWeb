@@ -18,18 +18,15 @@ Vue.use(Vuex);
 export default new Vuex.Store({
     state: {
         track:{
-            //show_guadan:true,//是否显示买卖一价挂单的利润
-            dataSourceIndex: 0, // 由下面的dataSource的索引来区分
-            dataSource:[
-                'ws://103.118.42.205:7001/ws', //火币后端，lk的
-            ],
+            websocketUrl: 'ws://103.118.42.205:7001/ws', 
+         
            
-            sub_huobi:{//基于火币网的数据订阅
-                otcRmb:["usdt","btc","eth","ht","eos"],//订阅的otc数据   "eosrmb"
+            sub_huobi:{
+                otcRmb:["usdt","btc","eth","ht","eos"],  //订阅的otc数据  
                 depthUsdt:["btcusdt","ethusdt","htusdt","eosusdt"],//行情盘口数据  "eosusdt"
                 TradeUsdt:["btcusdt","ethusdt","htusdt","eosusdt"] // 实时币币交易数据
             },
-            sub_okex:{//基于ok的数据订阅
+            sub_okex:{
                 otcRmb:["usdt","btc","eth","okb","ltc"],
                 TradeUsdt:["btcusdt","ethusdt","okbusdt","ltcusdt"]
             },
@@ -131,20 +128,20 @@ export default new Vuex.Store({
         marketDepth: {//行情深度
             "huobi":{
                 "btcusdt":{
-                    bids:[], //对应的是行情里面的买一买二...
-                    asks:[], //对应的是行情里面的卖一卖二...      
+                    bids:[], 
+                    asks:[],       
                 },
                 "ethusdt":{
-                    bids:[], //对应的是行情里面的买一买二...
-                    asks:[], //对应的是行情里面的卖一卖二...      
+                    bids:[],  
+                    asks:[],   
                 },
                 "htusdt":{
-                    bids:[], //对应的是行情里面的买一买二...
-                    asks:[], //对应的是行情里面的卖一卖二...      
+                    bids:[],  
+                    asks:[],  
                 },
                 "eosusdt":{
-                    bids:[], //对应的是行情里面的买一买二...
-                    asks:[], //对应的是行情里面的卖一卖二...      
+                    bids:[],  
+                    asks:[],    
                 }
             }
             
@@ -169,7 +166,7 @@ export default new Vuex.Store({
             }
                
         },
-        usdtPrice: {//买卖usdt价
+        usdtPrice: { //设置买卖usdt价
             "huobi":{
                 buy:10,
                 sell:1,
@@ -185,7 +182,7 @@ export default new Vuex.Store({
            
         },
 
-        //permission
+        
         otcPermission:{
             "huobi":true,
             "okex":true,
@@ -195,8 +192,6 @@ export default new Vuex.Store({
         // system notification
         globalNotifyMsg:"",
 
-
-
         // token
         isLogin:'0',
         token: localStorage.getItem('token') ? localStorage.getItem('token') : '',
@@ -204,24 +199,17 @@ export default new Vuex.Store({
         checkToken: null,
     },
     mutations: {
-        // changeUsdtPrice(state,paylaod){
-        //     paylaod.buy ? state.usdtPrice.buy = paylaod.buy : ""
-        //     paylaod.sell ? state.usdtPrice.sell = paylaod.sell : ""
-        // },
-        // 什么时候触发 socket 建立连接？
-        // 网页打开时 建立了socket 连接
+       
         [SOCKET_ONOPEN](state, event) {
 
             if (state.socket.isConnected == true){
                 return
             }
 
-            //console.log(Vue.prototype, event)
-            console.log(new Date().toTimeString().substring(0,8), "socket on open", state, event)
+        
             Vue.prototype.$socket = event.currentTarget
             state.socket.isConnected = true
             // 发送心跳
-
             state.socket.heartBeatTimer = setInterval(() => {
                 
                 state.socket.isConnected &&  Vue.prototype.$socket.send("ping")
@@ -286,7 +274,6 @@ export default new Vuex.Store({
             let i = 0
             let interval = setInterval(()=>{
                 if(i < subs.length){
-                    // Vue.prototype.$socket.sendObj(subs[i]);
                     Vue.prototype.$socket.send(JSON.stringify(subs[i]))
                     i++;
                 } else if (i>= subs.length && interval != null){
@@ -296,7 +283,6 @@ export default new Vuex.Store({
             },300)
         },
         [SOCKET_ONCLOSE](state, event) {
-            console.log("socket on close", state, event)
             state.socket.isConnected = false
             clearInterval(state.socket.heartBeatTimer)
             state.socket.heartBeatTimer = null
@@ -304,20 +290,15 @@ export default new Vuex.Store({
 
         },
         [SOCKET_ONERROR](state, event) {
-            console.log("socket on error", state, event)
-            // console.error(state, event)
         },
         // default handler called for all methods
         [SOCKET_ONMESSAGE](state, event) {
             
 
             // 处理不同类型错误 分sub和unsub，在到具体的订阅信息 TODO
-            // state.socket.message = event
-            //console.log("on message", event.data)
+            
             if (event.data == "unathorization"){
-                // 关闭连接 TODO
-                console.log("authorization failed then close connection")
-                //console.log(Vue.prototype.$socket, Vue.prototype)
+                // 不能关闭连接 TODO ？
                 //Vue.prototype.$disconnect()
                 return
                 //Vue.prototype.$socket.disconnect()
@@ -326,7 +307,6 @@ export default new Vuex.Store({
             let message = {}
             try{
                 message = JSON.parse(event.data)
-                //console.log("socket on message", state, event, message)
             } catch(err) {
                 return
             }
@@ -334,21 +314,15 @@ export default new Vuex.Store({
 
             // 判断 otc 币访问权限
             if (message.status == "no permission"){
-                console.log("not permit to access", message.exchange, message.channel)
                 state.otcPermission[message.exchange] = false
                 return
             }
             
             if (message.status != "success"){
-                console.log("receiv from socket not success", message.message)
                 return
             }
 
-            // 
-            //if(message.exchange == )
-
-
-           
+ 
             // 只处理了  otc数据  TODO
             const ch = message.ch.split(".")
             const exchange = message.exchange 
@@ -581,19 +555,14 @@ export default new Vuex.Store({
                     computeProfix(exchange, ch[2]);
                 }
                 
-                // state.otcDepth[ch[1]] = message.data;
-                // if(ch[1] == "usdtrmb"){
-                //     return
-                // }
-                // computeProfix();
+              
             }
             else if(ch.length > 3 && ch[2].match(/^depth$/g)){
                 if (exchange == "huobi"){
                     state.marketDepth[exchange][ch[3]] = message.data
                     computeProfix(exchange, ch[3]);
                 }
-                //state.marketDepth[ch[1]] = message.data;
-                // computeProfix();
+                
             }
             else if(ch.length > 2 && ch[2].match(/^ticker$/g)){
                 if (exchange == "huobi" || exchange == "okex" || exchange == "binance"){
@@ -601,17 +570,13 @@ export default new Vuex.Store({
                     computeProfix(exchange, ch[3]);
                 }
 
-                //state.marketTrade[ch[1]] = message.data
-            }
+             }
         },
         // mutations for reconnect methods
         [SOCKET_RECONNECT](state, count) {
             
-            console.log("socket reconnect", state, count)
-            // console.info(state, count)
-        },
+         },
         [SOCKET_RECONNECT_ERROR](state) {
-            console.log("socket reconnect error", state)
             state.socket.reconnectError = true;
         },
 
@@ -623,7 +588,7 @@ export default new Vuex.Store({
 	    },
 	    $_removeStorage(state, value){  // 删除token
               state.isLogin = '0';
-              // 清楚localstorage 里的数据
+              // 清除localstorage 里的数据
               state.token = ""
               state.userInfo = {}
 		      localStorage.removeItem('token');
@@ -632,16 +597,15 @@ export default new Vuex.Store({
 	    },
 
         SaveLoginDatafunction(state, data) {
-            //state.userInfo = data
             localStorage.setItem("userInfo", JSON.stringify(data))
         },
 
         connectWebSocket: function(state){
             
-            // 之前连接的数据，可能会存在，更新tokne后，之前一直unauthorized尝试重连接
-            //console.log(state)
+            // 之前连接的数据，可能会存在，更新tokne后，之前一直unauthorized尝试重连接？
+       
             if(state.socket.isConnected == false){
-                Vue.prototype.$connect(state.track.dataSource[0]+"?token="+state.token)
+                Vue.prototype.$connect(state.track.websocketUrl+"?token="+state.token)
 
             }
 
@@ -672,7 +636,6 @@ export default new Vuex.Store({
                     }).catch(function(res){
                         //pass
                     })
-                    console.log("check token ticker")
                 }, 60000);
             
             }
@@ -686,96 +649,6 @@ export default new Vuex.Store({
 
 
 
-    },
-    actions: {
-        // sendMessage: function (context, message) {
-        //     // console.log("send",message)
-        //     if(typeof message == "object"){
-        //         // Vue.prototype.$socket.sendObj(message)
-        //         Vue.prototype.$socket.send(JSON.stringify(message))
-        //     } else {
-        //         Vue.prototype.$socket.send(message)
-        //     }
-        // }
-
-      
-
-        huobiSub: function(context, exchange){
-
-            
-            let subs  = []
-            context.state.track.sub_huobi.otcRmb.forEach(element => {
-                subs.push({
-                    sub: "market.otc."+element,
-                    exchange: exchange,
-                })
-            })
-            context.state.track.sub_huobi.depthUsdt.forEach(element => {
-                subs.push({
-                    sub: "market.spot.depth."+element,
-                    exchange: exchange,
-                })
-            })
-            context.state.track.sub_huobi.TradeUsdt.forEach(element => {
-                subs.push({
-                    sub: "market.spot.ticker."+element,
-                    exchange: exchange,
-                })
-            })
-            // 如果 Vue.prototype.$socket == undefine 说明未建立连接
-
-         
-           
-            subs.forEach(s => {
-                
-
-                Vue.prototype.$socket.send(JSON.stringify(s))
-            })
-        },
-
-        okexSub: function(context, exchange){
-            let subs = [] 
-            context.state.track.sub_okex.otcRmb.forEach(element => {
-                subs.push({
-                    sub: "market.otc."+element,
-                    exchange: exchange,
-                })
-            })
-            context.state.track.sub_okex.TradeUsdt.forEach(element => {
-                subs.push({
-                    sub: "market.spot.ticker."+element,
-                    exchange: exchange,
-                })
-            })
-
-            subs.forEach(s => {
-                Vue.prototype.$socket.send(JSON.stringify(s))
-            })
-        },
-
-        binanceSub: function(context, exchange){
-            let subs = []
-            context.state.track.sub_binance.otcRmb.forEach(element => {
-                subs.push({
-                    sub: "market.otc."+element,
-                    exchange: exchange,
-                })
-            })
-
-            context.state.track.sub_binance.TradeUsdt.forEach(element => {
-                subs.push({
-                    sub: "market.spot.ticker."+element,
-                    exchange: exchange,
-                })
-            })
-
-            subs.forEach(s => {
-                Vue.prototype.$socket.send(JSON.stringify(s))
-            })
-
-
-        }
-       
     },
 
     getters: {

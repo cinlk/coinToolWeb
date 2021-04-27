@@ -20,7 +20,7 @@ const mutations = {
 }
 import VueNativeSock from 'vue-native-websocket' 
 
-let wsUrl = store.state.track.dataSource[store.state.track.dataSourceIndex]
+let wsUrl = store.state.track.websocketUrl
 Vue.use(VueNativeSock, wsUrl+"?token="+store.state.token, {
     // format: 'json', //对json对象数据的兼容，服务器传值也可以是json的
     store: store,
@@ -28,9 +28,8 @@ Vue.use(VueNativeSock, wsUrl+"?token="+store.state.token, {
     mutations: mutations,
     reconnection: true, // (Boolean) whether to reconnect automatically (false)
     reconnectionAttempts: 120, // (Number) number of reconnection attempts before giving up (Infinity),
-    reconnectionDelay: 60000, // (Number) how long to initially wait before attempting a new (1000)
+    reconnectionDelay: 30000, // (Number) how long to initially wait before attempting a new (1000)
     passToStoreHandler: function (eventName, event) { //对收到的socket的所有消息事件的前期封装操作
-        // console.log("passToStoreHandler", eventName, event)
         if (!eventName.startsWith('SOCKET_')) { return }
         let method = 'commit'
         let target = eventName.toUpperCase()

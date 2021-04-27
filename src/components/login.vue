@@ -1,14 +1,8 @@
 <template>
     <div class="login">
-        
-
-
         <div class="brick">
             起来搬砖了~
         </div>
-        <!-- <div>
-            <img src="../assets/coinexchange.png"/>
-        </div> -->
          <el-form 
             class="login-form"
             label-position="top"
@@ -72,8 +66,7 @@
      },
 
      created: function () {
-       console.log(" login page created")  
-       //this.$disconnect()
+      
        this.$store.commit('disConnectWebSocket')
        this.$store.commit('stopCheckTokenInterval')
 
@@ -154,12 +147,11 @@
                 }).then(function (res) {
                    if (res.data && res.data.code == 200){
                         let info = res.data.data
-                        console.log(res.data)
+                       
                         _this.$store.commit('SaveLoginDatafunction', res.data.data)
                         _this.$store.commit('$_setToken', info.token)
                         _this.$router.push({path: '/home'})
-                        //_this.$connect('ws://localhost:7001/ws?token='+info.token)
-                        //_this.$store.commit('connectWebSocket')
+                      
                         return 
                         
                    }else if(res.response){
@@ -167,13 +159,14 @@
                         if(res.response.data.code == 410){
                             _this.$message.error("手机或验证码错误");
 
+                        }else if(res.response.data.code == 429){
+                            _this.$message.error("登录太频繁请稍后再试");
                         }else{
                             _this.$message.error("登录失败");
                         }
                         
                    }
                    _this.loginEnable = true 
-                   //_this.$message.success("发送验证码成功");
                 }).catch(function (error) {
                     _this.loginEnable = true 
                     _this.$message.error("系统异常", error);

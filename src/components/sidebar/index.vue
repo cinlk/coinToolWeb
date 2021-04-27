@@ -63,15 +63,7 @@ export default {
     },
 
     created(){
-        console.log("index page created")
         this.getIndexInfo()
-    },
-
-    activated(){
-    console.log("index page activated")
-    },
-    deactivated(){
-    console.log("index page deactivated")
     },
 
     methods: {
