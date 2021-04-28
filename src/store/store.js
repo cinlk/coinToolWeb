@@ -232,10 +232,11 @@ export default new Vuex.Store({
                 }else{
                    state.socket.connectCount += 1
                    if (state.socket.connectCount < 6){
-                       // 重连 6次
-                       Vue.prototype.$connect(state.track.websocketUrl+"?token="+state.token)
+                       // 重连 6次 不生效？ 似乎只能sdk自带重连生效
+                       //Vue.prototype.$connect(state.track.websocketUrl+"?token="+state.token)
                       
                    }else{
+                        console.log("websocket lose connection")
                         Vue.prototype.$disconnect()
                    }
                 }
