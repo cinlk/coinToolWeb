@@ -22,9 +22,9 @@ export default new Vuex.Store({
          
            
             sub_huobi:{
-                otcRmb:["usdt","btc","eth","ltc","eos"],  //订阅的otc数据  
-                depthUsdt:["btcusdt","ethusdt","ltcsdt","eosusdt"],//行情盘口数据  "eosusdt"
-                TradeUsdt:["btcusdt","ethusdt","ltcsdt","eosusdt"] // 实时币币交易数据
+                otcRmb:["usdt","btc","eth","ltc","eos","ht"],  //订阅的otc数据  
+                depthUsdt:["btcusdt","ethusdt","ltcsdt","eosusdt","htusdt"],//行情盘口数据  "eosusdt"
+                TradeUsdt:["btcusdt","ethusdt","ltcsdt","eosusdt","htusdt"] // 实时币币交易数据
             },
             sub_okex:{
                 otcRmb:["usdt","btc","eth","okb","ltc"],
@@ -80,6 +80,10 @@ export default new Vuex.Store({
                     asks:[],
                 },
                 "eos":{
+                    bids:[],
+                    asks:[],
+                },
+                "ltc":{
                     bids:[],
                     asks:[],
                 },
@@ -143,6 +147,10 @@ export default new Vuex.Store({
                 "eosusdt":{
                     bids:[],  
                     asks:[],    
+                },
+                "ltcusdt":{
+                    bids:[],  
+                    asks:[], 
                 }
             }
             
@@ -152,7 +160,8 @@ export default new Vuex.Store({
                 "btcusdt":{},
                 "ethusdt":{},
                 "htusdt":{},
-                "eosusdt":{}
+                "eosusdt":{},
+                "ltcusdt":{},
             },
             "okex":{
                 "btcusdt":{},
