@@ -215,7 +215,7 @@ export default new Vuex.Store({
             if (state.socket.isConnected == true){
                 return
             }
-            console.log("socket open", new Date(), state, event, state.socket.connectCount)
+            //console.log("socket open", new Date(), state, event, state.socket.connectCount)
             
             Vue.prototype.$socket = event.currentTarget
             state.socket.isConnected = true
@@ -226,7 +226,7 @@ export default new Vuex.Store({
             state.socket.heartBeatTimer = setInterval(() => {
                 
 
-                console.log(new Date(), Vue.prototype, Vue.prototype.$socket)
+                //console.log(new Date(), Vue.prototype, Vue.prototype.$socket)
                 if (Vue.prototype.$socket && Vue.prototype.$socket.readyState == 1){
                     Vue.prototype.$socket.send("ping")
                 }else{
@@ -236,7 +236,7 @@ export default new Vuex.Store({
                        //Vue.prototype.$connect(state.track.websocketUrl+"?token="+state.token)
                       
                    }else{
-                        console.log("websocket lose connection")
+                        //console.log("websocket lose connection")
                         Vue.prototype.$disconnect()
                    }
                 }
@@ -311,7 +311,7 @@ export default new Vuex.Store({
             },300)
         },
         [SOCKET_ONCLOSE](state, event) {
-            console.log("socket close",  new Date(),state, event)
+            //console.log("socket close",  new Date(),state, event)
 
             // 后端 主动关闭 连接 前端未处理？TODO 还会一直ping
             state.socket.isConnected = false
@@ -321,7 +321,7 @@ export default new Vuex.Store({
 
         },
         [SOCKET_ONERROR](state, event) {
-            console.log("socket error", new Date(), state, event)
+            //console.log("socket error", new Date(), state, event)
 
         },
         // default handler called for all methods
@@ -333,13 +333,14 @@ export default new Vuex.Store({
             if (event.data == "unathorization"){
                 // 不能关闭连接 TODO ？
                 //Vue.prototype.$disconnect()
-                console.log("message unathorization ", new Date(), state, event)
+                 console.log("connection unathorization")
+                //console.log("message unathorization ", new Date(), Vue.prototype, Vue.prototype.$socket, state, event)
                 return
-                //Vue.prototype.$socket.disconnect()
             }
             if (event.data == "forbidden"){
                 // 连接频率过高
-                console.log("message forbidden ", new Date(), state, event)
+                console.log("connection forbidden")
+                //console.log("message forbidden ", new Date(), Vue.prototype, Vue.prototype.$socket, state, event)
                 return
             }
 
@@ -613,13 +614,13 @@ export default new Vuex.Store({
         },
         // mutations for reconnect methods
         [SOCKET_RECONNECT](state, count) {
-            console.log("socket reconnect",  new Date(), state)
+            //console.log("socket reconnect",  new Date(), state)
 
          },
         [SOCKET_RECONNECT_ERROR](state) {
-            console.log("socket reconnect_error", new Date(), state)
+            //console.log("socket reconnect_error", new Date(), state)
 
-            state.socket.reconnectError = true;
+            //state.socket.reconnectError = true;
         },
 
 

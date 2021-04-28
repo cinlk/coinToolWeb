@@ -78,6 +78,12 @@ export default {
     },
 
     created(){
+
+        if (localStorage.token && localStorage.token != ""){
+           this.$store.commit('$_setToken', localStorage.token )
+           this.$router.push({path: '/home'})
+           return
+        }
         this.$store.commit('disConnectWebSocket')
         this.$store.commit('stopCheckTokenInterval')
     },
