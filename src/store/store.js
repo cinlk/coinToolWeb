@@ -22,9 +22,9 @@ export default new Vuex.Store({
          
            
             sub_huobi:{
-                otcRmb:["usdt","btc","eth","ltc","eos","ht"],  //订阅的otc数据  
-                depthUsdt:["btcusdt","ethusdt","ltcusdt","eosusdt","htusdt"],//行情盘口数据  "eosusdt"
-                TradeUsdt:["btcusdt","ethusdt","ltcusdt","eosusdt","htusdt"] // 实时币币交易数据
+                otcRmb:["usdt","btc","eth","ltc","eos"],  //订阅的otc数据  
+                depthUsdt:["btcusdt","ethusdt","ltcusdt","eosusdt"],//行情盘口数据  "eosusdt"
+                TradeUsdt:["btcusdt","ethusdt","ltcusdt","eosusdt"] // 实时币币交易数据
             },
             sub_okex:{
                 otcRmb:["usdt","btc","eth","okb","ltc"],
