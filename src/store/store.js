@@ -212,6 +212,8 @@ export default new Vuex.Store({
             // 发送心跳 5分钟为反向 断开连接 TODO？
             state.socket.heartBeatTimer = setInterval(() => {
                 
+                console.log(Vue.prototype, Vue.prototype.$socket)
+                
                 state.socket.isConnected &&  Vue.prototype.$socket.send("ping")
             }, state.socket.heartbeatInterval);
 
