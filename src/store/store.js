@@ -41,6 +41,7 @@ export default new Vuex.Store({
             reconnectError: false,
             heartbeatInterval: 10000,
             heartBeatTimer: 0,
+            connectCount:0,
         },
 
          // 交易费用
@@ -205,16 +206,31 @@ export default new Vuex.Store({
             if (state.socket.isConnected == true){
                 return
             }
-            console.log("socket open", new Date(), state, event)
-        
+            console.log("socket open", new Date(), state, event, state.socket.connectCount)
+            
             Vue.prototype.$socket = event.currentTarget
             state.socket.isConnected = true
+            state.socket.connectCount = 0
+
+            //let that = this 
             // 发送心跳 5分钟为反向 断开连接 TODO？
             state.socket.heartBeatTimer = setInterval(() => {
                 
-                console.log(new Date(), Vue.prototype, Vue.prototype.$socket)
 
-                state.socket.isConnected &&  Vue.prototype.$socket.send("ping")
+                console.log(new Date(), Vue.prototype, Vue.prototype.$socket)
+                if (Vue.prototype$.socket && Vue.prototype.$socket.readyState == 1){
+                    Vue.prototype.$socket.send("ping")
+                }else{
+                   state.socket.connectCount += 1
+                   if (state.socket.connectCount < 6){
+                       // 重连 6次
+                       Vue.prototype.$connect(state.track.websocketUrl+"?token="+state.token)
+                      
+                   }else{
+                        Vue.prototype.$disconnect()
+                   }
+                }
+
             }, state.socket.heartbeatInterval);
 
 
@@ -581,11 +597,11 @@ export default new Vuex.Store({
         },
         // mutations for reconnect methods
         [SOCKET_RECONNECT](state, count) {
-            console.log("socket reconnect",  new Date(), state, event)
+            console.log("socket reconnect",  new Date(), state)
 
          },
         [SOCKET_RECONNECT_ERROR](state) {
-            console.log("socket reconnect_error", new Date(), state, event)
+            console.log("socket reconnect_error", new Date(), state)
 
             state.socket.reconnectError = true;
         },
