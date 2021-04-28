@@ -205,15 +205,15 @@ export default new Vuex.Store({
             if (state.socket.isConnected == true){
                 return
             }
-            console.log("socket open",  state, event)
+            console.log("socket open", new Date(), state, event)
         
             Vue.prototype.$socket = event.currentTarget
             state.socket.isConnected = true
             // 发送心跳 5分钟为反向 断开连接 TODO？
             state.socket.heartBeatTimer = setInterval(() => {
                 
-                console.log(Vue.prototype, Vue.prototype.$socket)
-                
+                console.log(new Date(), Vue.prototype, Vue.prototype.$socket)
+
                 state.socket.isConnected &&  Vue.prototype.$socket.send("ping")
             }, state.socket.heartbeatInterval);
 
@@ -285,7 +285,7 @@ export default new Vuex.Store({
             },300)
         },
         [SOCKET_ONCLOSE](state, event) {
-            console.log("socket close",  state, event)
+            console.log("socket close",  new Date(),state, event)
 
             // 后端 主动关闭 连接 前端未处理？TODO 还会一直ping
             state.socket.isConnected = false
@@ -295,7 +295,7 @@ export default new Vuex.Store({
 
         },
         [SOCKET_ONERROR](state, event) {
-            console.log("socket error",  state, event)
+            console.log("socket error", new Date(), state, event)
 
         },
         // default handler called for all methods
@@ -581,11 +581,11 @@ export default new Vuex.Store({
         },
         // mutations for reconnect methods
         [SOCKET_RECONNECT](state, count) {
-            console.log("socket reconnect",  state, event)
+            console.log("socket reconnect",  new Date(), state, event)
 
          },
         [SOCKET_RECONNECT_ERROR](state) {
-            console.log("socket reconnect_error",  state, event)
+            console.log("socket reconnect_error", new Date(), state, event)
 
             state.socket.reconnectError = true;
         },
