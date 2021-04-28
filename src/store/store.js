@@ -218,7 +218,7 @@ export default new Vuex.Store({
                 
 
                 console.log(new Date(), Vue.prototype, Vue.prototype.$socket)
-                if (Vue.prototype$.socket && Vue.prototype.$socket.readyState == 1){
+                if (Vue.prototype.$socket && Vue.prototype.$socket.readyState == 1){
                     Vue.prototype.$socket.send("ping")
                 }else{
                    state.socket.connectCount += 1
@@ -323,8 +323,14 @@ export default new Vuex.Store({
             if (event.data == "unathorization"){
                 // 不能关闭连接 TODO ？
                 //Vue.prototype.$disconnect()
+                console.log("message unathorization ", new Date(), state, event)
                 return
                 //Vue.prototype.$socket.disconnect()
+            }
+            if (event.data == "forbidden"){
+                // 连接频率过高
+                console.log("message forbidden ", new Date(), state, event)
+                return
             }
 
             let message = {}
