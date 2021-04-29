@@ -70,9 +70,14 @@
                           _this.userInfo = res.data.data
                           _this.hasData = true
                           _this.showContent = true
-                          if(localStorage.userInfo && localStorage.userInfo.extra){
-                              localStorage.userInfo.extra.type = _this.userInfo.type
-                              localStorage.userInfo.extra.member = _this.userInfo.member
+                          // console.log("change userinfo localstorage", localStorage)
+                         
+                           
+                          if(localStorage.userInfo){
+                              let localUser = JSON.parse(localStorage.getItem("userInfo"))
+                              localUser.extra.type = _this.userInfo.type
+                              localUser.extra.member = _this.userInfo.member
+                              localStorage.setItem("userInfo", JSON.stringify(localUser))
                           }
                           _this.$message.success("获取信息成功")
                      }else if (res.response){
