@@ -28,7 +28,7 @@ Vue.use(MetaInfo);
 
 
 // 配置公共url
-axios.defaults.baseURL = "http://swapworker.site/api/v1/"
+axios.defaults.baseURL = "https://swapworker.site/api/v1/"
 
 
 // 全局路由构造函数，判断是否登录和要跳转到页面
