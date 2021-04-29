@@ -18,7 +18,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
     state: {
         track:{
-            websocketUrl: 'ws://103.118.42.205:7001/ws', 
+            websocketUrl: 'wss://swapworker.site/ws', 
          
            
             sub_huobi:{
