@@ -1,7 +1,8 @@
 <template>
     <div class="login">
         <div class="brick">
-            起来搬砖了~
+           <div>SwapWorker</div>
+            <div style="font-size:18px">快速掌握差价，新币信息</div>
         </div>
          <el-form 
             class="login-form"
@@ -202,9 +203,10 @@
 
 .brick{
     font-size: 30px;
-    margin-bottom: 30px;
+    text-align: center;
+    margin-bottom: 10px;
     font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-    color: #B22222;
+    color: skyblue;
     
 }
 .login-form{
