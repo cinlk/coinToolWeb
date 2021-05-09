@@ -82,7 +82,7 @@
 
           getVerify() {
 
-            const TIME_COUNT = 60; //更改倒计时时间
+            let TIME_COUNT = 60; //更改倒计时时间
             // 验证手机号
             if (this.checkPhone() == false) {
                 return false;
