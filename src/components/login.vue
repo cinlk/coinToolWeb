@@ -2,7 +2,7 @@
     <div class="login">
         <div class="brick">
            <div>SwapWorker</div>
-            <div style="font-size:18px">快速掌握差价，新币信息</div>
+            <div style="font-size:18px">实时获取otc利润，新币信息</div>
         </div>
          <el-form 
             class="login-form"
