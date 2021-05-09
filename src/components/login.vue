@@ -81,6 +81,8 @@
      methods: {
 
           getVerify() {
+
+            const TIME_COUNT = 60; //更改倒计时时间
             // 验证手机号
             if (this.checkPhone() == false) {
                 return false;
@@ -97,6 +99,7 @@
                         return
                     }
                     if (res.response){
+                        TIME_COUNT = 0
                         if (res.response.data.code == 404){
                             _this.$message.error("用户不存在");
                         }else if(res.response.data.code == 400){
@@ -109,10 +112,11 @@
                     }
                    
                 }).catch(function (error) {
+                     TIME_COUNT = 0
                     _this.$message.error("异常错误");
                 });
 
-                const TIME_COUNT = 60; //更改倒计时时间
+                
                 if (!this.timer) {
                     this.count = TIME_COUNT;
                     this.show = false;
