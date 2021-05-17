@@ -16,7 +16,9 @@
 
 
         <div class="line"></div> 
-        <div class="contact">
+
+        <div class="cards">
+<div class="contact">
             <el-card>
                 <div class="el-card-head">
                     <span>服务商联系信息</span>
@@ -39,6 +41,26 @@
         </div>
 
 
+         <div class="contact">
+            <el-card>
+                <div class="el-card-head">
+                    <span>{{indexInfo.otc.title}}</span>
+                </div>
+                <div class="el-card-body">
+                        <li class="otcContent"  v-for="(c, index) in indexInfo.otc.content" :key="index" >
+                           
+                            <span style="margin-left:-5px">{{c}}</span>
+                        </li>
+                </div>
+            </el-card>
+        </div>
+        </div>
+        
+
+
+        
+
+
     </div>
 </template>
 
@@ -58,6 +80,10 @@ export default {
                  imgUrl:"",
                  contactQQ:"",
                  contactTelegram:"", 
+                 otc: {
+                     title: "",
+                     content:[]
+                 }
              }
         }
     },
@@ -75,6 +101,7 @@ export default {
               if (res.data && res.data.code == 200){
                        
                    _this.indexInfo = res.data.data
+                   _this.indexInfo.otc.content = JSON.parse(_this.indexInfo.otc.content).content
                    _this.showContent = true
                    _this.$message.success("获取数据成功")
                }else{
@@ -156,14 +183,14 @@ export default {
   }
   
   .el-card{
-      margin-top: 40px;
+     
       margin-left: 40px;
       border-radius: 4px;
       border: 1px solid #e6ebf5;
       color: #303133;
       font-size: 13px;
       width: 350px;
-      max-height: 160px;
+      /* max-height: 160px; */
   }
   .el-card-body{
       padding: 15px 20px 20px 20px;
@@ -179,5 +206,22 @@ export default {
       cursor: pointer;
       color: inherit;
       text-decoration:none;
+  }
+
+  .cards {
+    margin-top: 40px;
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start; 
+    height: 100%;
+  }
+
+  .otcContent{
+      line-height: 15px;
+      font-size: 15px;
+      padding-top: 10px;
+
   }
 </style>

@@ -19,7 +19,8 @@ export default new Vuex.Store({
     state: {
         track:{
             websocketUrl: 'wss://swapworker.site/ws', 
-         
+            // localtest
+            //websocketUrl: 'ws://localhost:7001/ws',
            
             sub_huobi:{
                 otcRmb:["usdt","btc","eth","ltc","eos"],  //订阅的otc数据  
