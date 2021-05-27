@@ -59,7 +59,7 @@ export default {
         return {
           articleList: [],
           totalCount:0,
-          pageSize:15,
+          pageSize:10,
           currentPage:1,
           loading: true,   
           hasPermission: true,
