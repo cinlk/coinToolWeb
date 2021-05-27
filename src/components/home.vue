@@ -135,11 +135,11 @@ export default{
         meta: [
           {
               name: 'description',
-              content: 'new coins btc eth otc blockchain ico exchange trade buy sell',
+              content: 'otc套利, 上线了火币,okex和币安交易所场外数据，已经新币一手信息和私募价格, 最新空投信息, 掌握实时动态',
           },
           {
               name: 'keywords',
-              content: 'new coins btc eth otc blockchain ico exchange trade buy sell'
+              content: 'otc 套,  区块链, 火币, okex, 币安, 私募, 打新, 发行新币, 空投数据'
           }
         ]
       },
@@ -194,7 +194,7 @@ export default{
                     },
                     {
                       path: "airdrop",
-                      name: '空投',
+                      name: '空投领取',
                     }
                   ],
                 },

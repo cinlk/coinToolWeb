@@ -2,7 +2,7 @@
     <div class="login">
         <div class="brick">
            <div>SwapWorker</div>
-            <div style="font-size:18px">实时获取otc利润，新币信息</div>
+            <div style="font-size:18px">差价套利，新币私募和最新空投领取</div>
         </div>
          <el-form 
             class="login-form"

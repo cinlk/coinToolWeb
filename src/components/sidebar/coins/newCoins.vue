@@ -147,9 +147,8 @@
         },
 
         cp(){
-               
-                this.$emit("closeDropmenu")
-            }
+               this.$emit("closeDropmenu")
+        }
 
       },
 

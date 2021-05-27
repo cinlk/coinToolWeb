@@ -1,6 +1,8 @@
 <template>
-       <div class="container">
-            <div v-loading="loading" element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading">
+       <div class="container" @click="cp">
+
+           <div v-if="!hasPermission">没有权限，请联系服务商</div>
+            <div v-if="showContent"  v-loading="loading" element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading">
             <h2 class="tag">空投列表</h2>
     
             <div class="list" >
@@ -61,7 +63,7 @@ export default {
           currentPage:1,
           loading: true,   
           hasPermission: true,
-
+          showContent: true,
 
         }
     },
@@ -97,17 +99,17 @@ export default {
                         //   _this.tableDataEnd = res.data.data.items
                           _this.articleList = res.data.data.items
                           _this.totalCount = res.data.data.totalCount
-                        //   _this.showContent = true
+                          _this.showContent = true
                          
                          
                           _this.hasPermission = true
                           //错误码不在httpstatus 中，在返回的数据中
                        }else if(res.data && res.data.code == 403){
-                        //    _this.showContent = false
+                           _this.showContent = false
                            _this.$message.error("没有权限访问，请联系服务商")
                            _this.hasPermission = false
                        }else{
-                        //    _this.showContent = false
+                           _this.showContent = false
                            _this.$message.error("系统错误")
                        }
                    
@@ -115,8 +117,8 @@ export default {
                    
                 }).catch(function (res) {
                      _this.$message.error("系统异常")
-                    _this.loading = false
-                    // _this.showContent = false
+                     _this.loading = false
+                     _this.showContent = false
                 })
         },
         handleSizeChange(val) {
@@ -132,10 +134,14 @@ export default {
 
         showairDropCoin(val){
             
-            let url = this.$router.resolve({path: `/airDropDetail/${val}`})
+            let url = this.$router.resolve({path: `/airdrop/detail/${val}`})
             window.open(url.href, '_blank')
              
         },
+
+        cp(){
+               this.$emit("closeDropmenu")
+        }
     },
 
         activated(){
