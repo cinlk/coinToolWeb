@@ -11,6 +11,8 @@ import Okex from '@/components/sidebar/otc/okex'
 import Binance from '@/components/sidebar/otc/binance'
 
 import Coins from '@/components/sidebar/coins/newCoins'
+import AirDropList from '@/components/sidebar/coins/airDropList'
+
 import CoinDetail from '@/components/sidebar/coins/coinDetail'
 
 import Person from '@/components/sidebar/person/person'
@@ -94,6 +96,12 @@ export default new Router({
           component: Coins,
           meta: { keepAlive: true}
         },
+        {
+          path: '/airdrop',
+          name:'airdrop',
+          component: AirDropList,
+          meta: { keepAlive: true }
+        }
        
       ]
     },

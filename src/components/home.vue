@@ -191,6 +191,10 @@ export default{
                     {
                       path: "newcoin",
                       name: "新币榜单",
+                    },
+                    {
+                      path: "airdrop",
+                      name: '空投',
                     }
                   ],
                 },

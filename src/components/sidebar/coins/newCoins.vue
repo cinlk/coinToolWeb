@@ -125,16 +125,15 @@
       
         handleSizeChange(val) {
           
-         
           this.pageSize = val;
           this.handleCurrentChange(1);
         },
 
-
         handleCurrentChange(val) {
           this.currentPage = val;
           this.getLists()
-        },//组件自带监控当前页码
+        },
+        //组件自带监控当前页码
 
        currentChangePage(list) {
           let from = (this.currentPage - 1) * this.pageSize;
