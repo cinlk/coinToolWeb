@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
+const pako = require('pako')
 
 import {
     SOCKET_ONOPEN,
@@ -10,6 +11,7 @@ import {
     SOCKET_RECONNECT,
     SOCKET_RECONNECT_ERROR
 } from './mutation-types'
+
 
 Vue.use(Vuex);
 
@@ -213,15 +215,25 @@ export default new Vuex.Store({
        
         [SOCKET_ONOPEN](state, event) {
 
+            //console.log(state, event )  
+             
+            // pako 
+           
             if (state.socket.isConnected == true){
                 return
             }
+
+
             //console.log("socket open", new Date(), state, event, state.socket.connectCount)
             
             Vue.prototype.$socket = event.currentTarget
             state.socket.isConnected = true
             state.socket.connectCount = 0
-
+            Vue.prototype.$socket.binaryType = 'arraybuffer'
+               
+          
+            
+           
             //let that = this 
             // 发送心跳 5分钟为反向 断开连接 TODO？
             state.socket.heartBeatTimer = setInterval(() => {
@@ -328,27 +340,44 @@ export default new Vuex.Store({
         // default handler called for all methods
         [SOCKET_ONMESSAGE](state, event) {
             
-
+             
             // 处理不同类型错误 分sub和unsub，在到具体的订阅信息 TODO
-            
-            if (event.data == "unathorization"){
+            // 现在 都变成二进制数据？
+
+
+            let message = {}
+            try{
+              
+                if (typeof(event.data) != "string"){
+                   
+                    let cstr = pako.inflate(event.data, {to:"string",})
+                    
+                    // 字符串
+                    message = JSON.parse(cstr)
+                }else{ 
+                    
+                    message = JSON.parse(event.data)
+                }
+                
+               
+            } catch(err) {
+                console.log(err)
+                return
+            }
+
+
+                        
+            if (message == "unathorization"){
                 // 不能关闭连接 TODO ？
                 //Vue.prototype.$disconnect()
                  console.log("connection unathorization")
                 //console.log("message unathorization ", new Date(), Vue.prototype, Vue.prototype.$socket, state, event)
                 return
             }
-            if (event.data == "forbidden"){
+            if (message == "forbidden"){
                 // 连接频率过高
                 console.log("connection forbidden")
                 //console.log("message forbidden ", new Date(), Vue.prototype, Vue.prototype.$socket, state, event)
-                return
-            }
-
-            let message = {}
-            try{
-                message = JSON.parse(event.data)
-            } catch(err) {
                 return
             }
 
