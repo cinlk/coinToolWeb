@@ -303,10 +303,22 @@ export default {
         
         return (item)=>{
            var initialData = _this.otcDepth[_this.exchange][item].bids
-           if (initialData !== null && initialData.length == 0 ){
+           if (initialData == null || initialData.length == 0 ){
              return []
            }
-         
+           
+           
+           // 显示蓝盾
+          // console.log("买单 蓝盾", item, _this.otcSettingForm[item].showMerchant)
+           if(_this.otcSettingForm[item].showMerchant){
+             initialData = initialData.filter(function (tmp) {
+               if(tmp.isMerchant == undefined || tmp.isMerchant == null){
+                 return tmp
+               }
+               return tmp.isMerchant == true 
+             })
+           }
+
            if (_this.otcSettingForm[item].bidAmount != undefined && _this.otcSettingForm[item].bidAmount != "") {
               // 得到数字
               var tmps = []
@@ -338,7 +350,7 @@ export default {
 
             var initialData = _this.otcDepth[_this.exchange][item].asks
 
-            if (initialData !== null && initialData.length == 0 ){
+            if (initialData == null || initialData.length == 0 ){
               return []
             }
          
