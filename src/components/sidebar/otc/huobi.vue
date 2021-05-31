@@ -164,30 +164,30 @@
            <el-switch  v-model="otcSettingForm[currentOtcSettingItem].showMerchant" ></el-switch>
         </el-form-item>
 
-        <el-row>
-          <el-col :span="10" style="margin-right:60px">
-             <el-form-item label="买单广告数量">
-          <el-input-number v-model.trim="otcSettingForm[currentOtcSettingItem].bidAmount"  
-           :precision="8" :controls="false"  auto-complete="off"  placeholder="大于0匹配，否则全部数据"></el-input-number>
+        <!-- <el-row>
+          <el-col :span="10" style="margin-right:60px"> -->
+           <el-form-item label="买单广告数量">
+          <el-input style="width:80%" v-model.trim="otcSettingForm[currentOtcSettingItem].bidAmount"  
+             placeholder="正数字以;分隔"></el-input>
         </el-form-item>
-          </el-col>
-          <el-col :span="10"  >
+          <!-- </el-col>
+          <el-col :span="10"  > -->
                   
         <el-form-item label="卖单广告数量">
-          <el-input-number v-model.trim="otcSettingForm[currentOtcSettingItem].askAmount"   
-          :precision="8" :controls="false"  auto-complete="off"  placeholder="大于0匹配，否则全部数据"></el-input-number>
+          <el-input style="width:80%" v-model.trim="otcSettingForm[currentOtcSettingItem].askAmount"   
+             placeholder="正数字以;分隔"></el-input>
         </el-form-item>
-
+<!-- 
           </el-col>
-        </el-row>
+        </el-row> -->
        
  
 
       </el-form>
-      <span slot="footer" class="dialog-footer">
+      <!-- <span slot="footer" class="dialog-footer">
         <el-button @click="otcSettingVisible = false">取 消</el-button>
         <el-button type="primary" @click="otcSettingConfirm">确 定</el-button>
-      </span>
+      </span> -->
     </el-dialog>
 
   </div>
@@ -239,38 +239,38 @@ export default {
                 "usdt":{
                    
                     showMerchant: false,
-                    bidAmount:0,
-                    askAmount:0
+                    bidAmount:"",
+                    askAmount:""
                 },
                 "btc":{
                 
                     showMerchant: false,
-                    bidAmount:0,
-                    askAmount:0
+                    bidAmount:"",
+                    askAmount:""
                 },
                 "eth":{
                     
                     showMerchant: false,
-                    bidAmount:0,
-                    askAmount:0
+                    bidAmount:"",
+                    askAmount:""
                 },
                 "ht":{
                   
                     showMerchant: false,
-                    bidAmount:0,
-                    askAmount:0
+                    bidAmount:"",
+                    askAmount:""
                 },
                 "eos":{
                    
                     showMerchant: false,
-                    bidAmount:0,
-                    askAmount:0
+                    bidAmount:"",
+                    askAmount:""
                 },
                 "ltc":{
                  
                     showMerchant: false,
-                    bidAmount:0,
-                    askAmount:0
+                    bidAmount:"",
+                    askAmount:""
                 },
         
       },
@@ -307,11 +307,26 @@ export default {
              return []
            }
          
-           if (_this.otcSettingForm[item].bidAmount != undefined && _this.otcSettingForm[item].bidAmount > 0) {
-              let c = _this.otcSettingForm[item].bidAmount 
-              initialData =  initialData.filter(function (tmp) {
-                return tmp.size == c
-              })
+           if (_this.otcSettingForm[item].bidAmount != undefined && _this.otcSettingForm[item].bidAmount != "") {
+              // 得到数字
+              var tmps = []
+              let numbers = _this.otcSettingForm[item].bidAmount.split(";")
+              for (var n in numbers){
+                    var f = parseFloat(numbers[n])
+                    
+                if (!isNaN(f)){
+                    tmps.push(f)
+                }
+              }
+              
+
+              if(tmps.length > 0){
+                initialData =  initialData.filter(function (tmp) {
+                  
+                  return tmps.indexOf(tmp.size) != -1
+                })
+              }
+              
            }
            return  initialData ? initialData.slice(0, _this.setting.count) : []
         }
@@ -327,12 +342,27 @@ export default {
               return []
             }
          
-           if (_this.otcSettingForm[item].askAmount != undefined && _this.otcSettingForm[item].askAmount > 0) {
-              let c = _this.otcSettingForm[item].askAmount 
-              initialData =  initialData.filter(function (tmp) {
-                return tmp.size == c
-              })
+           if (_this.otcSettingForm[item].askAmount != undefined && _this.otcSettingForm[item].askAmount != "") {
+              // 得到数字
+              var tmps = []
+              let numbers = _this.otcSettingForm[item].askAmount.split(";")
+              for (var n in numbers){
+                    var f = parseFloat(numbers[n])
+                    
+                if (!isNaN(f)){
+                    tmps.push(f)
+                }
+              }
+              
+              if(tmps.length > 0){
+                initialData =  initialData.filter(function (tmp) {
+                  
+                  return tmps.indexOf(tmp.size) != -1
+                })
+              }
+              
            }
+
            return  initialData ? initialData.slice(0, _this.setting.count) : []
         }
       }
