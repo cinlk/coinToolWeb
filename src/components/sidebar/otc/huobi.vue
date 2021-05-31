@@ -42,7 +42,7 @@
               size="mini"
               
               border
-              :data="otcDepth[exchange][item].bids ? otcDepth[exchange][item].bids.slice(0, setting.count) : []"
+              :data="bidDatas(item)"
               :row-class-name="otcRowClassName"
               :cell-style="otcCellStyle"
               :header-cell-style="otcHeaderCellStyleBuy"
@@ -52,7 +52,7 @@
               <el-table-column label="序号"  type="index" width="40" align="left" >
                 <template slot="header">
                   <div style="display:flex;flex-direction: column;justify-content: space-between;">
-                    <button  class="setting-btn" @click="showOtcTableSetting()"><i class="el-icon-s-tools" style="margin-left: -8px;"></i></button>
+                    <button  class="setting-btn" @click="showOtcTableSetting(item)"><i class="el-icon-s-tools" style="margin-left: -8px;"></i></button>
                  
                   </div>
                 </template>
@@ -70,7 +70,7 @@
               size="mini"
               :style="maxWidhStyle(item)"
               border
-              :data="otcDepth[exchange][item].asks ? otcDepth[exchange][item].asks.slice(0, setting.count) : []"
+              :data="askDatas(item)"
               :row-class-name="otcRowClassName"
               :cell-style="otcCellStyle"
               :header-cell-style="otcHeaderCellStyleSell"
@@ -155,11 +155,34 @@
       title="挂单昵称匹配"
       :visible.sync="otcSettingVisible"
       width="50%">
-      <el-form ref="otcSettingForm" label-width="50px" label-position="left">
-        <el-form-item label="昵称">
+      <el-form ref="otcSettingForm" label-width="120px" label-position="left">
+        <el-form-item label="昵称匹配">
           <el-input v-model.trim="otcSettingForm.name" placeholder="输入昵称,多个昵称以;隔开"></el-input>
         </el-form-item>
+
+        <el-form-item label="蓝盾(买单广告)">
+           <el-switch  v-model="otcSettingForm[currentOtcSettingItem].showMerchant" ></el-switch>
+        </el-form-item>
+
+        <el-row>
+          <el-col :span="10" style="margin-right:60px">
+             <el-form-item label="买单广告数量">
+          <el-input-number v-model.trim="otcSettingForm[currentOtcSettingItem].bidAmount"  
+           :precision="8" :controls="false"  auto-complete="off"  placeholder="大于0匹配，否则全部数据"></el-input-number>
+        </el-form-item>
+          </el-col>
+          <el-col :span="10"  >
+                  
+        <el-form-item label="卖单广告数量">
+          <el-input-number v-model.trim="otcSettingForm[currentOtcSettingItem].askAmount"   
+          :precision="8" :controls="false"  auto-complete="off"  placeholder="大于0匹配，否则全部数据"></el-input-number>
+        </el-form-item>
+
+          </el-col>
+        </el-row>
        
+ 
+
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="otcSettingVisible = false">取 消</el-button>
@@ -183,9 +206,13 @@ export default {
       
       exchange:"huobi",
 
+      //tableBidData: [],
+      
+
       settingDialogVisible: false,
       otcSettingVisible: false,
 
+      
       setting:{
         realtimePrice:[], 
         otc:["usdt"], 
@@ -205,9 +232,47 @@ export default {
         colorSelect: true,
         
       },
+      currentOtcSettingItem:"usdt",
+      // 表格的配置设置
       otcSettingForm:{
-        name:"",
-       
+                name:"",
+                "usdt":{
+                   
+                    showMerchant: false,
+                    bidAmount:0,
+                    askAmount:0
+                },
+                "btc":{
+                
+                    showMerchant: false,
+                    bidAmount:0,
+                    askAmount:0
+                },
+                "eth":{
+                    
+                    showMerchant: false,
+                    bidAmount:0,
+                    askAmount:0
+                },
+                "ht":{
+                  
+                    showMerchant: false,
+                    bidAmount:0,
+                    askAmount:0
+                },
+                "eos":{
+                   
+                    showMerchant: false,
+                    bidAmount:0,
+                    askAmount:0
+                },
+                "ltc":{
+                 
+                    showMerchant: false,
+                    bidAmount:0,
+                    askAmount:0
+                },
+        
       },
       otcFees:[
           {value: 0, label: 0},
@@ -230,7 +295,48 @@ export default {
       ]
     };
   },
-  computed: mapState(["track","tradeFee", "otcDepth","usdtPrice", "marketTrade","otcPermission"]),
+  computed: {
+      ...mapState(["track","tradeFee", "otcDepth","usdtPrice", "marketTrade","otcPermission"]),
+      bidDatas: function () {
+       
+        var _this = this 
+        
+        return (item)=>{
+           var initialData = _this.otcDepth[_this.exchange][item].bids
+           if (initialData !== null && initialData.length == 0 ){
+             return []
+           }
+         
+           if (_this.otcSettingForm[item].bidAmount != undefined && _this.otcSettingForm[item].bidAmount > 0) {
+              let c = _this.otcSettingForm[item].bidAmount 
+              initialData =  initialData.filter(function (tmp) {
+                return tmp.size == c
+              })
+           }
+           return  initialData ? initialData.slice(0, _this.setting.count) : []
+        }
+      },
+      askDatas: function () {
+        var _this = this 
+
+        return (item) => {
+
+            var initialData = _this.otcDepth[_this.exchange][item].asks
+
+            if (initialData !== null && initialData.length == 0 ){
+              return []
+            }
+         
+           if (_this.otcSettingForm[item].askAmount != undefined && _this.otcSettingForm[item].askAmount > 0) {
+              let c = _this.otcSettingForm[item].askAmount 
+              initialData =  initialData.filter(function (tmp) {
+                return tmp.size == c
+              })
+           }
+           return  initialData ? initialData.slice(0, _this.setting.count) : []
+        }
+      }
+  },
   directives: {
     drag(el){
       let oDiv = el;  
@@ -255,6 +361,7 @@ export default {
       };
     },
   },
+   
   methods: {
     handleBuyUsdtChange: function(value){
       typeof value
@@ -296,8 +403,9 @@ export default {
                        type: 'success'
                    });
     },
-    showOtcTableSetting: function(){
+    showOtcTableSetting: function(item){
       this.otcSettingVisible = true
+      this.currentOtcSettingItem = item
     },
     otcSettingConfirm: function(){
       this.otcSettingVisible = false
@@ -319,17 +427,20 @@ export default {
       return {textAlign: 'center', color:  this.style.redColor}
     },
     otcRowClassName: function({row,}) {
-      if (this.otcSettingForm.name == ""){
-          return '';
-      }
-      let names = this.otcSettingForm.name.split(";")
-       
-      for (var n in names){
-            if(names[n] == row.name)
-                return "success-row";
-      }
-      
-      return '';
+     
+        if (this.otcSettingForm.name == ""){
+            return '';
+        }
+        let names = this.otcSettingForm.name.split(";")
+         
+        for (var n in names){
+              if(names[n] == row.name)
+                  return "success-row";
+        }
+
+        return '';
+        
+     
     },
     maxWidhStyle: function (item) {
         let style = {
@@ -346,6 +457,8 @@ export default {
         
         return style
     },
+
+
     otcCellStyle: function({row, column,}){
       let style = {
         // lineHeight:"15px",
