@@ -105,7 +105,7 @@
             <el-radio v-model="settingForm.count" :label="10">前10</el-radio>
             <el-radio v-model="settingForm.count" :label="20">前20</el-radio>
             <el-radio v-model="settingForm.count" :label="50">50</el-radio>
-            <el-radio v-model="settingForm.count" :label="100">100</el-radio>
+            <el-radio v-model="settingForm.count" :label="80">80</el-radio>
 
         </el-form-item>
 

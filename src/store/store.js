@@ -367,14 +367,15 @@ export default new Vuex.Store({
 
 
                         
-            if (message == "unathorization"){
+           
+            if ( message.status == "unathorization"){
                 // 不能关闭连接 TODO ？
                 //Vue.prototype.$disconnect()
                  console.log("connection unathorization")
                 //console.log("message unathorization ", new Date(), Vue.prototype, Vue.prototype.$socket, state, event)
                 return
             }
-            if (message == "forbidden"){
+            if ( message.status == "forbidden"){
                 // 连接频率过高
                 console.log("connection forbidden")
                 //console.log("message forbidden ", new Date(), Vue.prototype, Vue.prototype.$socket, state, event)
@@ -384,6 +385,7 @@ export default new Vuex.Store({
 
             // 判断 otc 币访问权限
             if (message.status == "no permission"){
+                console.log("not permit to access ", message.exchange)
                 state.otcPermission[message.exchange] = false
                 return
             }
